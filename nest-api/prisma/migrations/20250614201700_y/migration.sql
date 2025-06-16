@@ -1,0 +1,9 @@
+-- CreateTable
+CREATE TABLE "MonthlyGoal" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "year" INTEGER NOT NULL,
+    "month" INTEGER NOT NULL,
+    "goal" REAL NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" DATETIME NOT NULL
+);
