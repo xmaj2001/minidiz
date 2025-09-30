@@ -1,0 +1,336 @@
+// --- ENUMS PARA ORGANIZAÇÃO DA DB (Mantidos e organizados) ---
+// Definindo constantes para campos repetitivos
+
+enum UserPermission {
+  ADMIN
+  TESOUREIRO
+  VISUALIZADOR
+}
+
+enum UserStatus {
+  ATIVO
+  BLOQUEADO
+}
+
+enum MemberStatus {
+  ATIVO
+  INATIVO
+  VISITANTE
+}
+
+enum Gender {
+  MASCULINO
+  FEMININO
+  OUTRO
+}
+
+enum MaritalStatus {
+  SOLTEIRO
+  CASADO
+  DIVORCIADO
+  VIUVO
+  UNIAO_ESTAVEL
+}
+
+enum ContributionType {
+  DIZIMO
+  OFERTA
+  DOACAO
+}
+
+enum PaymentMethod {
+  NENHUN
+  DINHEIRO
+  TRANSFERENCIA
+  CARTAO
+  CHEQUE
+  OUTRO
+}
+
+enum ContributionStatus {
+  PENDENTE
+  RECEBIDO // Para dinheiro
+  CANCELADO
+}
+
+enum EventType {
+  CULTO
+  CONFERENCIA
+  RETIRO
+  REUNIAO
+  CELEBRACAO
+  ESPECIAL
+}
+
+enum EventStatus {
+  PROGRAMADO
+  EM_ANDAMENTO
+  FINALIZADO
+  CANCELADO
+}
+
+enum ExpenseCategory {
+  MANUTENCAO
+  SALARIOS
+  EVENTOS
+  MISSOES
+  CARIDADE
+  ADMINISTRATIVO
+  OUTRO
+}
+
+enum EmployeeRole {
+  PASTOR
+  SECRETARIO
+  DIACONO
+  MUSICO
+  ZELADOR
+  OUTRO
+}
+
+enum EntityType {
+  USER
+  MEMBER
+  CONTRIBUTION
+  EXPENSE
+  EVENT
+  GROUP
+  EMPLOYEE
+  MEMBERDETAILS
+}
+
+enum ActionType {
+  CRIADO
+  ATUALIZADO
+  DELETADO
+  BLOQUEADO
+  ATIVADO
+}
+
+// ------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// MUDANÇA ESSENCIAL 1: Datasource para PostgreSQL
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Tabela de Usuários
+model User {
+  // Retorna ao Int para PostgreSQL
+  id            Int            @id @default(autoincrement())
+  nome          String
+  email         String         @unique
+  senha         String
+  // Usando Enum
+  permissao     UserPermission
+  // Usando Enum
+  status        UserStatus
+  contributions Contribution[]
+  expenses      Expense[]
+  events        Event[]
+  groups        Group[]
+  logs          ActivityLog[]
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  members       Member[] // Renomeado para 'members'
+}
+
+// Tabela de Membros
+model Member {
+  // Retorna ao Int para PostgreSQL
+  id              Int               @id @default(autoincrement())
+  nome            String
+  sobreNome       String
+  email           String?           @unique
+  telefone        String?
+  data_nascimento DateTime?
+  endereco        String?
+  // Usando Enum
+  status          MemberStatus
+  // Usando Enum
+  genero          Gender
+  data_cadastro   DateTime          @default(now())
+  details         MemberDetails?
+  contributions   Contribution[]
+  // NOVO: Relação para quando o membro é Líder de um Grupo
+  lidera_grupos   Group[]           @relation("GrupoLider") // NOMEANDO A RELAÇÃO AQUI
+  // NOVO: Relação para quando o membro é apenas Membro de um Grupo (M:N)
+  grupos_membro   Group[]           @relation("MembrosDoGrupo") // NOMEANDO A OUTRA RELAÇÃO AQUI
+  attendance      EventAttendance[]
+  employees       Employee[]
+  created_by      Int?
+  created_by_user User?             @relation(fields: [created_by], references: [id])
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+}
+
+// Tabela de Detalhes dos Membros (1:1)
+model MemberDetails {
+  // Retorna ao Int para PostgreSQL
+  id            Int            @id @default(autoincrement())
+  member_id     Int            @unique
+  member        Member         @relation(fields: [member_id], references: [id])
+  data_batismo  DateTime?
+  data_comunhao DateTime?
+  data_crisma   DateTime?
+  // Usando Enum
+  estado_civil  MaritalStatus?
+  observacao    String?
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+}
+
+// Tabela de Contribuições
+model Contribution {
+  id         Int                @id @default(autoincrement())
+  evento_id  Int?
+  member_id  Int
+  tipo       ContributionType
+  valor      Decimal
+  data       DateTime
+  metodo     PaymentMethod
+  finalidade String?
+  observacao String?
+  descricao  String?
+  imagens    String[]
+  status     ContributionStatus @default(PENDENTE)
+  tipoObjeto String?
+
+  event           Event?        @relation(fields: [evento_id], references: [id])
+  member          Member        @relation(fields: [member_id], references: [id])
+  created_by_user User?         @relation(fields: [created_by], references: [id])
+  created_by      Int?
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  logs            ActivityLog[]
+}
+
+// Tabela de Eventos
+model Event {
+  // Retorna ao Int para PostgreSQL
+  id                Int               @id @default(autoincrement())
+  grupo_id          Int?
+  nome              String
+  data_inicio       DateTime
+  data_fim          DateTime
+  // Usando Enum
+  tipo              EventType
+  status            EventStatus       @default(EM_ANDAMENTO)
+  local             String?
+  descricao         String?
+  // Retorna ao Decimal para precisão financeira
+  arrecadacao_total Decimal?
+  created_by        Int?
+  created_by_user   User?             @relation(fields: [created_by], references: [id])
+  group             Group?            @relation(fields: [grupo_id], references: [id])
+  created_at        DateTime          @default(now())
+  updated_at        DateTime          @updatedAt
+  attendance        EventAttendance[]
+  contributions     Contribution[]
+  expenses          Expense[]
+}
+
+// Tabela de Presença em Eventos (M:N explícito)
+model EventAttendance {
+  // Retorna ao Int para PostgreSQL
+  id        Int      @id @default(autoincrement())
+  event_id  Int
+  member_id Int
+  event     Event    @relation(fields: [event_id], references: [id])
+  member    Member   @relation(fields: [member_id], references: [id])
+  data      DateTime @default(now())
+
+  // Garante que o membro não seja registrado duas vezes no mesmo evento
+  @@unique([event_id, member_id])
+}
+
+// Tabela de Despesas
+model Expense {
+  // Retorna ao Int para PostgreSQL
+  id              Int             @id @default(autoincrement())
+  descricao       String
+  // Retorna ao Decimal para precisão financeira
+  valor           Decimal
+  data            DateTime
+  // Usando Enum
+  categoria       ExpenseCategory
+  evento_id       Int?
+  event           Event?          @relation(fields: [evento_id], references: [id])
+  employee_id     Int?
+  employee        Employee?       @relation(fields: [employee_id], references: [id])
+  observacao      String?
+  created_by      Int?
+  created_by_user User?           @relation(fields: [created_by], references: [id])
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+  logs            ActivityLog[]
+}
+
+// Tabela de Funcionários (1:1)
+model Employee {
+  // Retorna ao Int para PostgreSQL
+  id               Int          @id @default(autoincrement())
+  member_id        Int          @unique
+  member           Member       @relation(fields: [member_id], references: [id])
+  // Usando Enum
+  cargo            EmployeeRole
+  data_contratacao DateTime?
+  observacao       String?
+  expenses         Expense[]
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
+}
+
+// Tabela de Grupos
+model Group {
+  // Retorna ao Int para PostgreSQL
+  id              Int      @id @default(autoincrement())
+  nome            String
+  lider_id        Int
+  descricao       String?
+  events          Event[]
+  created_by      Int?
+  created_by_user User?    @relation(fields: [created_by], references: [id])
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  // MUDANÇA 3: Usando o campo de relação limpo para M:N com Member
+  // 1. RELAÇÃO LIDER (1:N)
+  lider           Member?  @relation("GrupoLider", fields: [lider_id], references: [id]) // USANDO O NOME AQUI
+  // 2. RELAÇÃO MEMBROS (M:N)
+  members         Member[] @relation("MembrosDoGrupo") // USANDO O NOME AQUI
+}
+
+// MUDANÇA 4: A tabela de junção GroupMember não é mais necessária!
+// O Prisma gerencia a tabela de junção para a relação M:N entre Member e Group automaticamente.
+// Eu a comentei aqui para referência, mas você não precisa dela no schema:
+/**
+ * model GroupMember {
+ * // ... código da tabela de junção
+ * }
+ */
+
+// Tabela de Log de Atividades
+model ActivityLog {
+  // Retorna ao Int para PostgreSQL
+  id               Int        @id @default(autoincrement())
+  user_id          Int
+  user             User       @relation(fields: [user_id], references: [id])
+  entidade         EntityType
+  entidade_id      Int // ID do registro afetado (Int no PostgreSQL)
+  acao             ActionType
+  dados_anteriores Json?
+  dados_atuais     Json?
+  data_acao        DateTime   @default(now())
+  observacao       String?
+
+  contributionId Int?
+  Contribution   Contribution? @relation(fields: [contributionId], references: [id])
+  expenseId      Int?
+  Expense        Expense?      @relation(fields: [expenseId], references: [id])
+}
