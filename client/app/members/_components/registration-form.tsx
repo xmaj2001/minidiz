@@ -65,7 +65,7 @@ export default function MemberRegistrationForm({ onCreating }: FormProps) {
       endereco: "",
       observacoes: "",
       status: "ATIVO",
-      genero: "NAO_INFORMADO",
+      genero: "MASCULINO",
     },
   });
   const {
