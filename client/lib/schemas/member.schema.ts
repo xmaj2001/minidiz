@@ -32,7 +32,7 @@ export const createMemberSchema = z
   })
   .refine((data) => data.email || data.telefone, {
     message: "É necessário informar pelo menos um contato (email ou telefone).",
-    path: ["email"], // aplica no campo email, mas poderia ser em telefone
+    path: ["email"],
   });
 
 export type FormCreateMember = z.infer<typeof createMemberSchema>;
