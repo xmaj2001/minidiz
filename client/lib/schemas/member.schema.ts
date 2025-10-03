@@ -26,7 +26,7 @@ export const createMemberSchema = z
       message: "O status é obrigatório.",
     }),
 
-    genero: z.enum(["MASCULINO", "FEMININO", "OUTRO", "NAO_INFORMADO"], {
+    genero: z.enum(["MASCULINO", "FEMININO", "OUTRO"], {
       message: "O gênero é obrigatório.",
     }),
   })
