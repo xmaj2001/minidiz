@@ -31,6 +31,7 @@ export const MemberServices = {
           error: null,
         };
       }
+      
 
       console.error("Erro ao criar membro:", res_data);
       return {
