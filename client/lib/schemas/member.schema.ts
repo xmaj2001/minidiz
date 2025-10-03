@@ -23,10 +23,11 @@ export const createMemberSchema = z
     endereco: z.string().optional(),
     observacoes: z.string().optional(),
     status: z.enum(["ATIVO", "INATIVO", "PENDENTE"], {
-      required_error: "O status é obrigatório.",
+      message: "O status é obrigatório.",
     }),
+
     genero: z.enum(["MASCULINO", "FEMININO", "OUTRO", "NAO_INFORMADO"], {
-      required_error: "O gênero é obrigatório.",
+      message: "O gênero é obrigatório.",
     }),
   })
   .refine((data) => data.email || data.telefone, {
