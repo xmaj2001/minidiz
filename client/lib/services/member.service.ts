@@ -33,13 +33,12 @@ export const MemberServices = {
       }
 
       console.error("Erro ao criar membro:", res_data);
-      if (res_data)
-        return {
-          result: null,
-          error: res_data.errors ? res_data : null,
-          success: false,
-          message: res_data.message as string | "Erro ao criar membro",
-        };
+      return {
+        result: null,
+        error: res_data.errors ? res_data : null,
+        success: false,
+        message: res_data.message as string | "Erro ao criar membro",
+      };
     } catch (error) {
       console.error("Erro na requisição:", error);
       return {
