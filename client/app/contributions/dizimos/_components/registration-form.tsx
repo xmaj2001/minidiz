@@ -124,7 +124,6 @@ export function RegisterContributionForm({
               </div>
             </div>
 
-            {/* Valor */}
             <FormField
               control={form.control}
               name="valor"
