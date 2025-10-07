@@ -64,10 +64,50 @@ export class MemberImplementation implements MemberRepository {
         grupos_membro: true,
         lidera_grupos: true,
       },
+      take: 50,
+      orderBy: {
+        nome: 'asc',
+      },
     });
     return members as Member[];
   }
 
+  // No arquivo MemberServices ou onde a função search está definida
+
+  async search(query: string): Promise<Member[]> {
+    const searchQuery = query ? query.trim() : '';
+
+    if (searchQuery.length < 3) {
+      return [];
+    }
+
+    const searchCondition = {
+      contains: searchQuery,
+      mode: 'insensitive' as const,
+    };
+
+    const members = await this.prisma.member.findMany({
+      where: {
+        OR: [
+          { nome: searchCondition },
+          { sobreNome: searchCondition },
+          { email: searchCondition },
+          { telefone: searchCondition },
+          { details: { observacao: searchCondition } },
+        ],
+      },
+      include: {
+        grupos_membro: true,
+        lidera_grupos: true,
+      },
+      take: 50,
+      orderBy: {
+        nome: 'asc',
+      },
+    });
+
+    return members as Member[];
+  }
   async findById(id: number): Promise<Member> {
     const member = await this.prisma.member.findUnique({
       where: { id },

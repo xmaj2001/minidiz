@@ -37,7 +37,7 @@ export class UserController {
   // GET /users/:id
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id') id: number): Promise<User> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return this.userService.findById(Number(id));
   }
 

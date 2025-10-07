@@ -15,5 +15,6 @@ import { UserImplementation } from './repository/prisma/user.implementation';
       useClass: UserImplementation,
     },
   ],
+  exports: [UserRepository],
 })
 export class UserModule {}

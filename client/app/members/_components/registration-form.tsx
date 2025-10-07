@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
 import {
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -296,11 +295,9 @@ export default function MemberRegistrationForm({ onCreating }: FormProps) {
             <Button type="submit" disabled={isloading}>
               {isloading ? "Aguarda o Registro" : " Adicionar Membro"}
             </Button>
-            <DrawerClose>
-              <Button variant="outline" type="button">
-                Cancelar
-              </Button>
-            </DrawerClose>
+            <Button variant="outline" type="button">
+              Cancelar
+            </Button>
           </DrawerFooter>
         </form>
       </Form>

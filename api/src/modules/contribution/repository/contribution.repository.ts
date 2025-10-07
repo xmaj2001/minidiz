@@ -2,11 +2,14 @@ import {
   CreateContributionDto,
   UpdateContributionDto,
 } from '../dto/contribution.dto';
-import { Contribution } from '../entities/contribution.entity';
+import {
+  Contribution,
+  DomainContributionType,
+} from '../entities/contribution.entity';
 
 export default abstract class ContributionRepository {
   abstract create(data: CreateContributionDto): Promise<Contribution>;
-  abstract findAll(): Promise<Contribution[]>;
+  abstract findAll(type?: DomainContributionType): Promise<Contribution[]>;
   abstract findById(id: number): Promise<Contribution>;
   abstract update(
     id: number,

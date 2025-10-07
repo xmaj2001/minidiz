@@ -1,19 +1,19 @@
 import { API, ApiResponse } from "@/config/settings";
 import {
-  CreateMemberData,
-  UpdateMemberData,
-  IMember,
-  IListaMembers,
-} from "../interfaces/member.interface";
+  CreateContributionData,
+  UpdateContributionData,
+  IContribution,
+  ContributionType,
+} from "../interfaces/contribution.interface";
 
-export const MemberServices = {
+export const ContributionServices = {
   create: async (
-    data: CreateMemberData,
+    data: CreateContributionData,
     userId: number,
     token?: string
-  ): Promise<ApiResponse<IMember | null>> => {
+  ): Promise<ApiResponse<IContribution | null>> => {
     try {
-      const res = await fetch(API.members, {
+      const res = await fetch(API.contributions, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,17 +28,17 @@ export const MemberServices = {
         return {
           result: res_data,
           success: true,
-          message: "Member Create",
+          message: "Contribution Create",
           error: null,
         };
       }
 
-      console.error("Erro ao criar membro:", res_data);
+      console.error("Erro ao criar contribuição:", res_data);
       return {
         result: null,
         error: res_data.errors ? res_data : null,
         success: false,
-        message: res_data.message as string | "Erro ao criar membro",
+        message: res_data.message as string | "Erro ao criar contribuição",
       };
     } catch (error) {
       console.error("Erro na requisição:", error);
@@ -46,18 +46,18 @@ export const MemberServices = {
         result: null,
         success: false,
         error: null,
-        message: "Erro ao criar membro",
+        message: "Erro ao criar contribuição",
       };
     }
   },
 
   update: async (
     id: number,
-    data: UpdateMemberData,
+    data: UpdateContributionData,
     token?: string
   ): Promise<boolean> => {
     try {
-      const res = await fetch(`${API.members}/${id}`, {
+      const res = await fetch(`${API.contributions}/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export const MemberServices = {
         return true;
       }
 
-      console.error("Erro ao atualizar membro:", res_data);
+      console.error("Erro ao atualizar contribuição:", res_data);
       return false;
     } catch (error) {
       console.error("Erro na requisição:", error);
@@ -82,17 +82,18 @@ export const MemberServices = {
   },
 
   listPaginate: async (
+    type: ContributionType,
     page: number = 1,
     limit: number = 10
-  ): Promise<ApiResponse<IMember[]>> => {
+  ): Promise<ApiResponse<IContribution[]>> => {
     try {
-      const url = `${API.members}?page=${page}&limit=${limit}`;
+      const url = `${API.contributions}?page=${page}&limit=${limit}&type=${type}`;
       const res = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        next: { tags: ["members"] },
+        next: { tags: ["contributions"] },
       });
 
       const data = await res.json();
@@ -100,11 +101,10 @@ export const MemberServices = {
         return { result: data, success: true, message: "" };
       }
 
-      // console.error("Erro ao listar membros:", data);
       return {
         result: [],
         success: false,
-        message: "Erro ao listar membros:",
+        message: "Erro ao listar contribuições:",
       };
     } catch (error) {
       console.error("Erro na requisição:", error);
@@ -112,14 +112,14 @@ export const MemberServices = {
     }
   },
 
-  findById: async (id: number): Promise<IMember | null> => {
+  findById: async (id: number): Promise<IContribution | null> => {
     try {
-      const res = await fetch(`${API.members}/${id}`, {
+      const res = await fetch(`${API.contributions}/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        next: { tags: ["members"] },
+        next: { tags: ["contributions"] },
       });
 
       const data = await res.json();
@@ -127,7 +127,7 @@ export const MemberServices = {
         return data;
       }
 
-      console.error("Erro ao buscar membro:", data);
+      console.error("Erro ao buscar contribuição:", data);
       return null;
     } catch (error) {
       console.error("Erro na requisição:", error);
@@ -137,7 +137,7 @@ export const MemberServices = {
 
   remove: async (id: number, token?: string): Promise<boolean> => {
     try {
-      const res = await fetch(`${API.members}/${id}`, {
+      const res = await fetch(`${API.contributions}/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -149,7 +149,7 @@ export const MemberServices = {
         return true;
       }
 
-      console.error("Erro ao deletar membro:", await res.json());
+      console.error("Erro ao deletar contribuição:", await res.json());
       return false;
     } catch (error) {
       console.error("Erro na requisição:", error);
@@ -161,9 +161,9 @@ export const MemberServices = {
     query: string,
     page: number = 1,
     limit: number = 10
-  ): Promise<ApiResponse<IListaMembers | []>> => {
+  ): Promise<{ data: IContribution[]; total: number }> => {
     try {
-      const url = `${API.members}/search?q=${encodeURIComponent(
+      const url = `${API.contributions}/search?query=${encodeURIComponent(
         query
       )}&page=${page}&limit=${limit}`;
       const res = await fetch(url, {
@@ -171,19 +171,19 @@ export const MemberServices = {
         headers: {
           "Content-Type": "application/json",
         },
-        next: { tags: ["members"] },
+        next: { tags: ["contributions"] },
       });
 
       const data = await res.json();
       if (res.status === 200) {
-        return { result: data, success: true, message: "Data obitidos com sucesso" };
+        return data;
       }
 
-      console.error("Erro ao buscar membros:", data);
-      return { result: [], success: false, message: "Erro ao buscar membros" };
+      console.error("Erro ao buscar contribuições:", data);
+      return { data: [], total: 0 };
     } catch (error) {
       console.error("Erro na requisição:", error);
-      return { result: [], success: false, message: "Erro na requisição" };
+      return { data: [], total: 0 };
     }
   },
 };

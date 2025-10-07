@@ -53,7 +53,7 @@ export default function ContentInset({ data }: ContentInsetProps) {
   const handleDeleteMembro = (id: number) => {};
   return (
     <SidebarInset>
-      <Drawer direction="right">
+      <Drawer direction="right" open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex w-full gap-2 px-4">
             {/* <SidebarTrigger className="-ml-1" />
@@ -77,7 +77,7 @@ export default function ContentInset({ data }: ContentInsetProps) {
             </Breadcrumb> */}
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0 ">
           <HeaderMember />
           {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
             <div className="bg-muted/50 aspect-video rounded-xl" />
@@ -97,11 +97,9 @@ export default function ContentInset({ data }: ContentInsetProps) {
             oneDeleteMembro={handleDeleteMembro}
           />
         </div>
-        <DrawerTrigger className="absolute bottom-14 right-14">
-          <Button disabled={isCreating} className="">
-            {isCreating ? <Loader className="animate-spin" /> : <Plus />}
-          </Button>
-        </DrawerTrigger>
+        <Button disabled={isCreating} className="absolute bottom-8 right-8 rounded-full" onClick={()=> setIsDialogOpen(true)}>
+          {isCreating ? <Loader className="animate-spin" /> : <Plus />}
+        </Button>
         <DrawerContent>
           <MemberRegistrationForm onCreating={setIsCreating} />
         </DrawerContent>

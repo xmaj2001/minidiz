@@ -39,7 +39,7 @@ enum ContributionType {
 }
 
 enum PaymentMethod {
-  NENHUN
+  NENHUM
   DINHEIRO
   TRANSFERENCIA
   CARTAO

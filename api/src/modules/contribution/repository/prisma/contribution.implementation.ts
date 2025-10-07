@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import ContributionRepository from '../contribution.repository';
 import {
@@ -17,10 +17,16 @@ import {
   PaymentMethod as PrismaPaymentMethod,
   ContributionStatus as PrismaContributionStatus,
 } from '@prisma/client';
+import UserRespository from 'src/modules/users/repository/user.repository';
+import MemberRepository from 'src/modules/members/repository/member.repository';
 
 @Injectable()
 export class ContributionImplementation implements ContributionRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject() private readonly user: UserRespository,
+    @Inject() private readonly member: MemberRepository,
+  ) {}
 
   private mapDomainTypeToPrisma(
     domainType: DomainContributionType,
@@ -38,23 +44,21 @@ export class ContributionImplementation implements ContributionRepository {
     return domainStatus as PrismaContributionStatus;
   }
 
-  // Converte o objeto do Prisma para a Entidade de Domínio
   private mapPrismaToDomain(
     prismaContribution: PrismaContribution,
   ): Contribution {
-    // O Prisma retorna 'valor' como Decimal/Object, mas convertemos para string no domínio
-    // ou garantimos que a coerção funcione se for usado o tipo string
     return prismaContribution as unknown as Contribution;
   }
 
   async create(data: CreateContributionDto): Promise<Contribution> {
+    const user = await this.user.findById(data.created_by);
+    const member = await this.member.findById(data.member_id);
     const contribution = await this.prisma.contribution.create({
       data: {
         // IDs:
         evento_id: data.evento_id || null,
-        member_id: data.member_id,
-        created_by: data.created_by || null,
-
+        member_id: member.id,
+        created_by: user.id,
         // Mapeamento dos Enums
         tipo: this.mapDomainTypeToPrisma(data.tipo),
         metodo: this.mapDomainMethodToPrisma(data.metodo),
@@ -74,8 +78,13 @@ export class ContributionImplementation implements ContributionRepository {
     return this.mapPrismaToDomain(contribution);
   }
 
-  async findAll(): Promise<Contribution[]> {
-    const contributions = await this.prisma.contribution.findMany();
+  async findAll(type?: DomainContributionType): Promise<Contribution[]> {
+    const contributions = await this.prisma.contribution.findMany({
+      where: type ? { tipo: type } : {},
+      include: {
+        member: true,
+      },
+    });
     return contributions as unknown as Contribution[];
   }
 

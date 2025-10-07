@@ -10,7 +10,10 @@ import {
   CreateContributionDto,
   UpdateContributionDto,
 } from '../dto/contribution.dto';
-import { Contribution } from '../entities/contribution.entity';
+import {
+  Contribution,
+  DomainContributionType,
+} from '../entities/contribution.entity';
 import { MemberService } from '../../members/services/member.service';
 import { EventService } from '../../events/services/event.service';
 
@@ -45,8 +48,8 @@ export class ContributionService {
     return this.contributionRepository.create(data);
   }
 
-  async findAll(): Promise<Contribution[]> {
-    return this.contributionRepository.findAll();
+  async findAll(type?: DomainContributionType): Promise<Contribution[]> {
+    return this.contributionRepository.findAll(type);
   }
 
   async findById(id: number): Promise<Contribution> {

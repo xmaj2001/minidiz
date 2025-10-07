@@ -9,8 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   ParseIntPipe,
-  UsePipes,
-  ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { ContributionService } from '../services/contribution.service';
 import {
@@ -20,13 +19,6 @@ import {
 import { Contribution } from '../entities/contribution.entity';
 
 @Controller('contributions')
-@UsePipes(
-  new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }),
-)
 export class ContributionController {
   constructor(private readonly contributionService: ContributionService) {}
 
@@ -42,8 +34,9 @@ export class ContributionController {
   // GET /contributions
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(): Promise<Contribution[]> {
-    return this.contributionService.findAll();
+  async findAll(@Query() query: any): Promise<Contribution[]> {
+    const { type } = query;
+    return this.contributionService.findAll(type);
   }
 
   // GET /contributions/:id

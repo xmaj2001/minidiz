@@ -28,6 +28,10 @@ export class MemberService {
     return this.memberRepository.findAll();
   }
 
+  async search(query: string): Promise<Member[]> {
+    return this.memberRepository.search(query);
+  }
+
   async findById(id: number): Promise<Member> {
     return this.memberRepository.findById(id);
   }

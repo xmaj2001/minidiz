@@ -8,6 +8,8 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { MemberService } from '../services/member.service';
 import { CreateMemberDto, UpdateMemberDto } from '../dto/member.dto';
@@ -31,11 +33,19 @@ export class MemberController {
     return this.memberService.findAll();
   }
 
+  // GET /members
+  @Get('/search')
+  @HttpCode(HttpStatus.OK)
+  async search(@Query() query: any): Promise<Member[]> {
+    const { q } = query;
+    return this.memberService.search(q ?? '');
+  }
+
   // GET /members/:id
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   // ParseIntPipe garante que o ':id' da URL seja um número
-  async findOne(@Param('id') id: number): Promise<Member> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Member> {
     return this.memberService.findById(id);
   }
 
@@ -43,7 +53,7 @@ export class MemberController {
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   async update(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateMemberDto: UpdateMemberDto,
   ): Promise<Member> {
     return this.memberService.update(id, updateMemberDto);
@@ -52,7 +62,7 @@ export class MemberController {
   // DELETE /members/:id
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: number): Promise<void> {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.memberService.remove(id);
   }
 }

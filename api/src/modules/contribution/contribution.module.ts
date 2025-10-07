@@ -4,12 +4,13 @@ import { ContributionService } from './services/contribution.service';
 import { ContributionController } from './controllers/contribution.controller';
 import ContributionRepository from './repository/contribution.repository';
 import { ContributionImplementation } from './repository/prisma/contribution.implementation';
-import { MemberModule } from '../members/member.module';
 import { EventModule } from '../events/event.module';
+import { MemberModule } from '../members/member.module';
+import { UserModule } from '../users/user.module';
 
 @Module({
   controllers: [ContributionController],
-  imports: [MemberModule, EventModule],
+  imports: [MemberModule, EventModule, UserModule],
   exports: [ContributionRepository, ContributionService],
   providers: [
     ContributionService,
