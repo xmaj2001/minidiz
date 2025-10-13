@@ -182,7 +182,7 @@ export const MemberServices = {
       console.error("Erro ao buscar membros:", data);
       return { result: [], success: false, message: "Erro ao buscar membros" };
     } catch (error) {
-      console.error("Erro na requisição:", error);
+      console.log("Erro na requisição:", error);
       return { result: [], success: false, message: "Erro na requisição" };
     }
   },

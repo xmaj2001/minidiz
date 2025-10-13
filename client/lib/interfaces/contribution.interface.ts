@@ -32,7 +32,6 @@ export interface IEvento {
   updated_at: string;
 }
 
-
 export interface IContribution {
   id: number;
   evento_id?: number | null;
@@ -41,6 +40,7 @@ export interface IContribution {
   valor?: string | null;
   data: string;
   metodo:
+    | "NENHUM"
     | "DINHEIRO"
     | "CARTAO"
     | "TRANSFERENCIA"
@@ -71,6 +71,7 @@ export interface CreateContributionData {
   valor?: number;
   data: string;
   metodo:
+    | "NENHUM"
     | "DINHEIRO"
     | "CARTAO"
     | "TRANSFERENCIA"

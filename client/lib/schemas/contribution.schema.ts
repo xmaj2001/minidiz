@@ -10,6 +10,16 @@ const PAYMENT_METHODS = [
   "CHEQUE",
   "OUTRO",
 ] as const;
+
+const PAYMENT_METHODS_2 = [
+  "NENHUM",
+  "DINHEIRO",
+  "EXPRESS",
+  "CARTAO",
+  "TRANSFERENCIA",
+  "CHEQUE",
+  "OUTRO",
+] as const;
 const CONTRIBUTION_STATUSES = ["PENDENTE", "RECEBIDO", "CANCELADO"] as const;
 
 const dateStringTransformer = z.string().transform((str, ctx) => {
@@ -66,8 +76,7 @@ export const createOfertaSchema = z
   .object({
     evento_id: z
       .number({
-        error:
-          "O ID do evento deve ser um número inteiro, se aplicável.",
+        error: "O ID do evento deve ser um número inteiro, se aplicável.",
       })
       .int({ message: "O ID do evento deve ser um número inteiro." })
       .positive({ message: "O ID do evento deve ser positivo." })
@@ -84,17 +93,14 @@ export const createOfertaSchema = z
     valor: z
       .number({ error: "O valor deve ser um número." })
       .positive({ message: "O valor deve ser positivo e maior que zero." })
-      .refine((val) => val >= 0.01, {
-        message: "O valor deve ser maior que zero.",
-      })
       .optional(),
     data: z
       .string({ error: "A data da contribuição é obrigatória." })
       .refine((val) => !isNaN(Date.parse(val)), {
         message: "A data deve estar no formato ISO 8601 (AAAA-MM-DD).",
       }),
-    metodo: z.enum(PAYMENT_METHODS, {
-      message: `Método de pagamento inválido. Use: ${PAYMENT_METHODS.join(
+    metodo: z.enum(PAYMENT_METHODS_2, {
+      message: `Método de pagamento inválido. Use: ${PAYMENT_METHODS_2.join(
         ", "
       )}`,
     }),
@@ -104,8 +110,7 @@ export const createOfertaSchema = z
     imagens: z
       .array(
         z.string({
-          error:
-            "Cada item em imagens deve ser uma string de URL.",
+          error: "Cada item em imagens deve ser uma string de URL.",
         })
       )
       .optional(),
@@ -169,8 +174,8 @@ export const createDoacaoSchema = z
       .refine((val) => !isNaN(Date.parse(val)), {
         message: "A data deve estar no formato ISO 8601 (AAAA-MM-DD).",
       }),
-    metodo: z.enum(PAYMENT_METHODS, {
-      message: `Método de pagamento inválido. Use: ${PAYMENT_METHODS.join(
+    metodo: z.enum(PAYMENT_METHODS_2, {
+      message: `Método de pagamento inválido. Use: ${PAYMENT_METHODS_2.join(
         ", "
       )}`,
     }),
