@@ -10,7 +10,6 @@ import { TableContribution } from "./table-contributions";
 import { TitheHero } from "./statsCards";
 import { useState } from "react";
 import { SearchMembers } from "./searchMembers";
-import { useToast } from "@/hooks/use-toast";
 import { Filter } from "./filter";
 
 interface ContentInsetProps {
@@ -21,8 +20,6 @@ export default function ContentInset({ data }: ContentInsetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("todos");
-  const [mesFilter, setMesFilter] = useState("todos");
-  const { toast } = useToast();
 
   // Filtrar dízimos
   const filteredData = data.filter((dizimo) => {
@@ -46,10 +43,9 @@ export default function ContentInset({ data }: ContentInsetProps) {
   );
   const mediaDizimo = totalDizimos / data.length;
   const dizimosConfirmados = data.filter((d) => d.status === "RECEBIDO").length;
-  const dizimistasMes = new Set(data.map((d) => d.member)).size;
   
-  const handleEdit = (membro: IContribution) => {};
-  const handleDelete = (id: number) => {};
+  const handleEdit = () => {};
+  const handleDelete = () => {};
 
   return (
     <SidebarInset>

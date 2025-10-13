@@ -35,7 +35,7 @@ import {
 import { useActionState, useEffect, useTransition } from "react";
 import { RegisterMember, StateFormAction } from "../actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircleIcon, Terminal } from "lucide-react";
+import { AlertCircleIcon } from "lucide-react";
 
 interface FormProps {
   onCreating: (v: boolean) => void;

@@ -21,7 +21,7 @@ import {
   IContribution,
   IListaContributions,
 } from "@/lib/interfaces/contribution.interface";
-import { Edit, Heart, Trash2, UserCheck, UserX } from "lucide-react";
+import { Edit, Heart, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 
@@ -33,7 +33,7 @@ interface TableContributionProps {
 
 export const TableContribution = ({
   data,
-  oneDelete,
+  // oneDelete,
   onEdit,
 }: TableContributionProps) => {
   const getStatusBadge = (status: string) => {

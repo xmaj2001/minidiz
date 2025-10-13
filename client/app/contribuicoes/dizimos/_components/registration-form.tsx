@@ -40,7 +40,6 @@ import {
 } from "@/lib/schemas/contribution.schema";
 import { useActionState, useTransition } from "react";
 import { RegisterActionContributions, StateFormAction } from "../actions";
-import { useToast } from "@/hooks/use-toast";
 
 const PAYMENT_METHODS = [
   "DINHEIRO",
@@ -83,7 +82,7 @@ export function RegisterContributionForm({
     // is compatible with the form's value type (transformed string).
     resolver: zodResolver(createDizimoSchema) as unknown as Resolver<
       FormCreateDizimo,
-      any
+      unknown
     >,
     defaultValues: {
       member_id: selectedMember.id,
