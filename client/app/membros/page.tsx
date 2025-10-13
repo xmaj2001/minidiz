@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { MemberServices } from "@/lib/services/member.service";
@@ -9,7 +9,7 @@ export default async function Page() {
   return (
     <SidebarProvider>
       <AppSidebar />
-     <ContentInset data={apiResult.result}/>
+      <ContentInset data={apiResult.result} />
     </SidebarProvider>
   );
 }

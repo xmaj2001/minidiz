@@ -22,7 +22,6 @@ import {
   IListaContributions,
 } from "@/lib/interfaces/contribution.interface";
 import { Edit, Eye, Gift, ImageIcon, Trash2 } from "lucide-react";
-import { no } from "zod/v4/locales";
 
 interface TableContributionProps {
   data: IListaContributions;
@@ -32,8 +31,8 @@ interface TableContributionProps {
 
 export const TableContribution = ({
   data,
-  oneDelete,
-  onEdit,
+  // oneDelete,
+  // onEdit,
 }: TableContributionProps) => {
   const getStatusBadge = (status: string) => {
     return status === ContributionStatus.RECEBIDO ? (
@@ -66,10 +65,6 @@ export const TableContribution = ({
         {finalidade}
       </Badge>
     );
-  };
-
-  const formtValorInNumber = (v?: string | null | undefined) => {
-    return Number.parseInt(v ?? "0");
   };
 
   return (

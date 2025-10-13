@@ -3,8 +3,6 @@
 import * as React from "react"
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
   Calendar,
   Church,
   Command,
@@ -19,8 +17,6 @@ import {
   PieChart,
   PiggyBank,
   Settings,
-  Settings2,
-  SquareTerminal,
   TrendingUp,
   Users,
   Wallet,

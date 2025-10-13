@@ -32,6 +32,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Home from "@/app/page";
+import Image from "next/image";
 import { useState } from "react";
 
 interface ListContributionProps {
@@ -42,9 +43,9 @@ interface ListContributionProps {
 
 export const ListContribution = ({
   data,
-  oneDelete,
-  onEdit,
-}: ListContributionProps) => {
+}: // oneDelete,
+// onEdit,
+ListContributionProps) => {
   const [showImageDialog, setShowImageDialog] = useState(false);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [selectedDoacao, setSelectedDoacao] = useState<IContribution | null>(
@@ -170,13 +171,13 @@ export const ListContribution = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {selectedImages.map((image, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={image || "/placeholder.svg"}
-                  alt={`Imagem ${index + 1} da doação`}
-                  className="w-full h-64 object-cover rounded-lg border"
-                />
-              </div>
+              <Image
+                key={index}
+                src={image || "/placeholder.svg"}
+                alt={`Imagem ${index + 1} da doação`}
+                fill
+                className="object-cover rounded-lg border"
+              />
             ))}
           </div>
 
