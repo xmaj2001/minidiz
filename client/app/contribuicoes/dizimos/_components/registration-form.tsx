@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import type { Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -77,7 +78,13 @@ export function RegisterContributionForm({
   const [isTransitioning, startTransition] = useTransition();
 
   const form = useForm<FormCreateDizimo>({
-    resolver: zodResolver(createDizimoSchema),
+    // zod schema accepts both string and Date for `data` and then transforms it to a string.
+    // Cast the resolver to the expected Resolver type so the union input (string|Date)
+    // is compatible with the form's value type (transformed string).
+    resolver: zodResolver(createDizimoSchema) as unknown as Resolver<
+      FormCreateDizimo,
+      any
+    >,
     defaultValues: {
       member_id: selectedMember.id,
       valor: 0.01,

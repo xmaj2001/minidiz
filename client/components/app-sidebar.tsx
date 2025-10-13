@@ -71,24 +71,24 @@ const data = {
   contributions: [
     {
       title: "Contribuições",
-      url: "/contributions",
+      url: "/contribuicoes",
       icon: Wallet,
       isActive: true,
       items: [
         {
           title: "Dízimos",
           icon: Church,
-          url: "#",
+          url: "/contribuicoes/dizimos",
         },
         {
           title: "Doações",
           icon: Gift,
-          url: "#",
+          url: "/contribuicoes/doacoes",
         },
         {
           title: "Ofertas",
           icon: PiggyBank,
-          url: "#",
+          url: "/contribuicoes/ofertas",
         },
       ],
     },
