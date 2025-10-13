@@ -17,8 +17,8 @@ import {
   PaymentMethod as PrismaPaymentMethod,
   ContributionStatus as PrismaContributionStatus,
 } from '@prisma/client';
-import UserRespository from 'src/modules/users/repository/user.repository';
-import MemberRepository from 'src/modules/members/repository/member.repository';
+import UserRespository from '../../../users/repository/user.repository';
+import MemberRepository from '../../../members/repository/member.repository';
 
 @Injectable()
 export class ContributionImplementation implements ContributionRepository {
