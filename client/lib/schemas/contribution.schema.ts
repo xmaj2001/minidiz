@@ -118,7 +118,7 @@ export const createOfertaSchema = z
       .enum(CONTRIBUTION_STATUSES, {
         message: `Status inválido. Use: ${CONTRIBUTION_STATUSES.join(", ")}`,
       })
-      .optional(),
+      .default("PENDENTE"),
     tipoObjeto: z.string().optional(),
     created_by: z
       .number({
@@ -147,8 +147,7 @@ export const createDoacaoSchema = z
   .object({
     evento_id: z
       .number({
-        error:
-          "O ID do evento deve ser um número inteiro, se aplicável.",
+        error: "O ID do evento deve ser um número inteiro, se aplicável.",
       })
       .int({ message: "O ID do evento deve ser um número inteiro." })
       .positive({ message: "O ID do evento deve ser positivo." })
@@ -185,8 +184,7 @@ export const createDoacaoSchema = z
     imagens: z
       .array(
         z.string({
-          error:
-            "Cada item em imagens deve ser uma string de URL.",
+          error: "Cada item em imagens deve ser uma string de URL.",
         })
       )
       .optional(),
@@ -194,7 +192,7 @@ export const createDoacaoSchema = z
       .enum(CONTRIBUTION_STATUSES, {
         message: `Status inválido. Use: ${CONTRIBUTION_STATUSES.join(", ")}`,
       })
-      .optional(),
+      .default("PENDENTE"),
     tipoObjeto: z.string().optional(),
     created_by: z
       .number({
@@ -258,7 +256,7 @@ export const updateDizimoSchema = z.object({
     .enum(CONTRIBUTION_STATUSES, {
       message: `Status inválido. Use: ${CONTRIBUTION_STATUSES.join(", ")}`,
     })
-    .optional(),
+    .default("PENDENTE"),
   finalidade: z.string().optional(),
   observacao: z.string().optional(),
 });
@@ -304,7 +302,7 @@ export const updateOfertaSchema = z.object({
     .enum(CONTRIBUTION_STATUSES, {
       message: `Status inválido. Use: ${CONTRIBUTION_STATUSES.join(", ")}`,
     })
-    .optional(),
+    .default("PENDENTE"),
   finalidade: z.string().optional(),
   observacao: z.string().optional(),
   descricao: z.string().optional(),
@@ -359,7 +357,7 @@ export const updateDoacaoSchema = z.object({
     .enum(CONTRIBUTION_STATUSES, {
       message: `Status inválido. Use: ${CONTRIBUTION_STATUSES.join(", ")}`,
     })
-    .optional(),
+    .default("PENDENTE"),
   finalidade: z.string().optional(),
   observacao: z.string().optional(),
   descricao: z.string().optional(),

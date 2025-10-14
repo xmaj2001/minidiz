@@ -3,7 +3,7 @@
 import { revalidateTag } from "next/cache";
 import { ErrorResponse } from "@/config/settings";
 import { ContributionType } from "@/lib/interfaces/contribution.interface";
-import { FormCreateDizimo, FormCreateOferta } from "@/lib/schemas/contribution.schema";
+import { FormCreateOferta } from "@/lib/schemas/contribution.schema";
 import { ContributionServices } from "@/lib/services/contribution.service";
 
 export interface StateFormAction {
