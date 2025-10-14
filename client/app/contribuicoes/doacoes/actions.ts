@@ -31,7 +31,7 @@ export const RegisterActionContributions = async (
       finalidade: data.finalidade,
       observacao: data.observacao,
       imagens: data.imagens || [],
-      tipoObjeto: data.tipoObjeto || null,
+      tipoObjeto: data.tipoObjeto || undefined,
     };
 
     const apiResult = await ContributionServices.create(payload, 1);
