@@ -111,7 +111,7 @@ export function DialogForm({
       forma_pagamento:
         getPaymentMethodToEnum(editingDespesa?.forma_pagamento?? '') ||
         PaymentMethod.DINHEIRO,
-      status: getStatusToEnum() || ExpenseStatus.PENDENTE,
+      status: getStatusToEnum(editingDespesa?.status?? '') || ExpenseStatus.PENDENTE,
       // numeroNF: editingDespesa?.numeroNF || "",
       observacao: editingDespesa?.observacao || "",
       created_by: 1,
@@ -319,11 +319,11 @@ export function DialogForm({
 
               <div className="space-y-2">
                 <Label htmlFor="numeroNF">Número da NF (opcional)</Label>
-                <Input
+                {/* <Input
                   id="numeroNF"
                   placeholder="NF-2024-001"
                   defaultValue={editingDespesa?.numeroNF ?? ""}
-                />
+                /> */}
               </div>
 
               <div className="space-y-2 md:col-span-2">
