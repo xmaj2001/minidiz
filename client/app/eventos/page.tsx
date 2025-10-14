@@ -136,14 +136,30 @@ const eventosData = [
   },
 ];
 
+type Evento = {
+  id: number;
+  nome: string;
+  tipo: string;
+  data: string;
+  horario: string;
+  local: string;
+  responsavel: string;
+  participantesEsperados: number;
+  orcamento: number;
+  gastoReal: number;
+  status: string;
+  descricao: string;
+  observacoes: string;
+};
+
 export default function EventosPage() {
-  const [eventos, setEventos] = useState(eventosData);
+  const [eventos, setEventos] = useState<Evento[]>(eventosData);
   const [searchTerm, setSearchTerm] = useState("");
   const [tipoFilter, setTipoFilter] = useState("todos");
   const [statusFilter, setStatusFilter] = useState("todos");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingEvento, setEditingEvento] = useState<any>(null);
-  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [editingEvento, setEditingEvento] = useState<Evento | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
 
   // Filtrar eventos
   const filteredEventos = eventos.filter((evento) => {
@@ -181,7 +197,7 @@ export default function EventosPage() {
     setIsDialogOpen(true);
   };
 
-  const handleEditEvento = (evento: any) => {
+  const handleEditEvento = (evento: Evento) => {
     setEditingEvento(evento);
     setIsDialogOpen(true);
   };

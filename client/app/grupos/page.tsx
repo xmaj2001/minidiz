@@ -35,7 +35,19 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { Toaster } from "@/components/ui/toaster";
 
 // Dados mockados dos grupos
-const gruposData = [
+type Grupo = {
+  id: number;
+  nome: string;
+  descricao: string;
+  lider: string;
+  membros: number;
+  ativo: boolean;
+  dataCreacao: string;
+  proximaReuniao: string;
+  observacoes: string;
+};
+
+const gruposData: Grupo[] = [
   {
     id: 1,
     nome: "Jovens",
@@ -83,10 +95,10 @@ const gruposData = [
 ];
 
 export default function GruposPage() {
-  const [grupos, setGrupos] = useState(gruposData);
+  const [grupos, setGrupos] = useState<Grupo[]>(gruposData);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingGrupo, setEditingGrupo] = useState<any>(null);
+  const [editingGrupo, setEditingGrupo] = useState<Grupo | null>(null);
 
   // Filtrar grupos
   const filteredGrupos = grupos.filter(
@@ -100,7 +112,7 @@ export default function GruposPage() {
     setIsDialogOpen(true);
   };
 
-  const handleEditGrupo = (grupo: any) => {
+  const handleEditGrupo = (grupo: Grupo) => {
     setEditingGrupo(grupo);
     setIsDialogOpen(true);
   };
