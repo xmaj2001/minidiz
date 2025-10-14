@@ -7,7 +7,11 @@ import {
   IsDateString,
   Min,
 } from 'class-validator';
-import { DomainExpenseCategory } from '../entities/expense.entity';
+import {
+  ExpenseCategory,
+  ExpenseStatus,
+  PaymentMethod,
+} from '../entities/expense.entity';
 
 export class CreateExpenseDto {
   @IsNotEmpty({ message: 'A descrição da despesa é obrigatória.' })
@@ -27,38 +31,33 @@ export class CreateExpenseDto {
   data: string;
 
   @IsNotEmpty({ message: 'A categoria da despesa é obrigatória.' })
-  @IsEnum(DomainExpenseCategory, {
-    message: `Categoria inválida. Use: ${Object.values(DomainExpenseCategory).join(', ')}`,
+  @IsEnum(ExpenseCategory, {
+    message: `Categoria inválida. Use: ${Object.values(ExpenseCategory).join(', ')}`,
   })
-  categoria: DomainExpenseCategory;
+  categoria: ExpenseCategory;
 
-  @IsOptional()
-  @IsNumber(
-    {},
-    { message: 'O ID do evento deve ser um número inteiro, se aplicável.' },
-  )
-  evento_id?: number;
+  @IsNotEmpty({ message: 'A estatus da despesa é obrigatória.' })
+  @IsEnum(ExpenseStatus, {
+    message: `Status inválida. Use: ${Object.values(ExpenseStatus).join(', ')}`,
+  })
+  status: ExpenseStatus;
 
-  @IsOptional()
-  @IsNumber(
-    {},
-    {
-      message:
-        'O ID do funcionário associado deve ser um número inteiro, se aplicável.',
-    },
-  )
-  employee_id?: number;
+  @IsNotEmpty({ message: 'A forma de pagamento da despesa é obrigatória.' })
+  @IsEnum(PaymentMethod, {
+    message: `Forma de pagamento inválido. Use: ${Object.values(PaymentMethod).join(', ')}`,
+  })
+  forma_pagamento: PaymentMethod;
 
   @IsOptional()
   @IsString({ message: 'A observação deve ser uma string.' })
   observacao?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'O ID do usuário que registrou é obrigatório.' })
   @IsNumber(
     {},
     { message: 'O ID do usuário que registrou deve ser um número.' },
   )
-  created_by?: number;
+  created_by: number;
 }
 
 // DTO de Atualização (Todos os campos são opcionais)
@@ -76,17 +75,23 @@ export class UpdateExpenseDto {
   @IsDateString({}, { message: 'A data deve estar no formato ISO 8601.' })
   data?: string;
 
-  @IsOptional()
-  @IsEnum(DomainExpenseCategory, { message: `Categoria inválida.` })
-  categoria?: DomainExpenseCategory;
+  @IsNotEmpty({ message: 'A categoria da despesa é obrigatória.' })
+  @IsEnum(ExpenseCategory, {
+    message: `Categoria inválida. Use: ${Object.values(ExpenseCategory).join(', ')}`,
+  })
+  categoria: ExpenseCategory;
 
-  @IsOptional()
-  @IsNumber({}, { message: 'O ID do evento deve ser um número inteiro.' })
-  evento_id?: number;
+  @IsNotEmpty({ message: 'A estatus da despesa é obrigatória.' })
+  @IsEnum(ExpenseStatus, {
+    message: `Status inválida. Use: ${Object.values(ExpenseStatus).join(', ')}`,
+  })
+  status: ExpenseStatus;
 
-  @IsOptional()
-  @IsNumber({}, { message: 'O ID do funcionário deve ser um número inteiro.' })
-  employee_id?: number;
+  @IsNotEmpty({ message: 'A forma de pagamento da despesa é obrigatória.' })
+  @IsEnum(PaymentMethod, {
+    message: `Forma de pagamento inválido. Use: ${Object.values(PaymentMethod).join(', ')}`,
+  })
+  forma_pagamento: PaymentMethod;
 
   @IsOptional()
   @IsString({ message: 'A observação deve ser uma string.' })

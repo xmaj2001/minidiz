@@ -6,9 +6,10 @@ import ContentInset from "./_components/content-Inset";
 import { ContributionType } from "@/lib/interfaces/contribution.interface";
 import { Toaster } from "@/components/ui/toaster";
 
-
 export default async function Page() {
-    const apiResult = await ContributionServices.listPaginate(ContributionType.DOACAO)
+  const apiResult = await ContributionServices.listPaginate(
+    ContributionType.DOACAO
+  );
   return (
     <SidebarProvider>
       <AppSidebar />

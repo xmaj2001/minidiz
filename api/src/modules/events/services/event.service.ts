@@ -38,7 +38,7 @@ export class EventService {
   }
 
   async create(data: CreateEventDto): Promise<Event> {
-    this.validateDates(data.data_inicio, data.data_fim);
+    // this.validateDates(data.data_inicio, data.data_fim);
     // await this.validateResponsibleMember(data.responsavel_member_id);
 
     return this.eventRepository.create(data);
@@ -54,13 +54,13 @@ export class EventService {
 
   async update(id: number, data: UpdateEventDto): Promise<Event> {
     // 1. Buscar evento atual para obter datas não alteradas
-    const existingEvent = await this.eventRepository.findById(id);
+    // const existingEvent = await this.eventRepository.findById(id);
 
     // 2. Aplicar a validação de datas, usando os valores existentes se não forem alterados
-    const newStart =
-      data.data_inicio || existingEvent.data_inicio.toISOString();
-    const newEnd = data.data_fim || existingEvent.data_fim.toISOString();
-    this.validateDates(newStart, newEnd);
+    // const newStart =
+    //   data.data_inicio || existingEvent.data_inicio.toISOString();
+    // const newEnd = data.data_fim || existingEvent.data_fim.toISOString();
+    // this.validateDates(newStart, newEnd);
 
     // 3. Validar o novo responsável, se alterado
     // if (data.responsavel_member_id) {
