@@ -19,6 +19,7 @@ import {
   Settings,
   TrendingUp,
   Users,
+  Users2,
   Wallet,
 } from "lucide-react"
 
@@ -117,6 +118,7 @@ const mainItems = [
 
 const managementItems = [
   { title: "Membros", url: "/membros", icon: Users },
+  { title: "Grupos", url: "/grupos", icon: Users2 },
   { title: "Eventos", url: "/eventos", icon: Calendar },
   { title: "Relatórios", url: "/relatorios", icon: FileText },
   { title: "Análises", url: "/analises", icon: PieChart },

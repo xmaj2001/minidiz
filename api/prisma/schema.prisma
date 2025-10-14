@@ -53,32 +53,6 @@ enum ContributionStatus {
   CANCELADO
 }
 
-enum EventType {
-  CULTO
-  CONFERENCIA
-  RETIRO
-  REUNIAO
-  CELEBRACAO
-  ESPECIAL
-}
-
-enum EventStatus {
-  PROGRAMADO
-  EM_ANDAMENTO
-  FINALIZADO
-  CANCELADO
-}
-
-enum ExpenseCategory {
-  MANUTENCAO
-  SALARIOS
-  EVENTOS
-  MISSOES
-  CARIDADE
-  ADMINISTRATIVO
-  OUTRO
-}
-
 enum EmployeeRole {
   PASTOR
   SECRETARIO
@@ -214,26 +188,24 @@ model Contribution {
 // Tabela de Eventos
 model Event {
   // Retorna ao Int para PostgreSQL
-  id                Int               @id @default(autoincrement())
-  grupo_id          Int?
-  nome              String
-  data_inicio       DateTime
-  data_fim          DateTime
-  // Usando Enum
-  tipo              EventType
-  status            EventStatus       @default(EM_ANDAMENTO)
-  local             String?
-  descricao         String?
-  // Retorna ao Decimal para precisão financeira
-  arrecadacao_total Decimal?
-  created_by        Int?
-  created_by_user   User?             @relation(fields: [created_by], references: [id])
-  group             Group?            @relation(fields: [grupo_id], references: [id])
-  created_at        DateTime          @default(now())
-  updated_at        DateTime          @updatedAt
-  attendance        EventAttendance[]
-  contributions     Contribution[]
-  expenses          Expense[]
+  id              Int               @id @default(autoincrement())
+  nome            String
+  data            DateTime
+  tipo            String            @default("Geral")
+  status          String            @default("Planejado")
+  horaio          String?
+  orcamento       Decimal?
+  local           String?
+  descricao       String
+  observacoes     String?
+  created_by      Int?
+  created_by_user User?             @relation(fields: [created_by], references: [id])
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  attendance      EventAttendance[]
+  contributions   Contribution[]
+  expenses        Expense[]
+  
 }
 
 // Tabela de Presença em Eventos (M:N explícito)
@@ -252,23 +224,23 @@ model EventAttendance {
 
 // Tabela de Despesas
 model Expense {
-  // Retorna ao Int para PostgreSQL
-  id              Int             @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   descricao       String
-  // Retorna ao Decimal para precisão financeira
   valor           Decimal
   data            DateTime
-  // Usando Enum
-  categoria       ExpenseCategory
-  evento_id       Int?
-  event           Event?          @relation(fields: [evento_id], references: [id])
-  employee_id     Int?
-  employee        Employee?       @relation(fields: [employee_id], references: [id])
+  categoria       String        @default("OUTRO")
   observacao      String?
+  fornecedor      String?
+  forma_pagamento String        @default("NENHUM")
+  status          String        @default("PENDENTE")
+  evento_id       Int?
+  event           Event?        @relation(fields: [evento_id], references: [id])
+  employee_id     Int?
+  employee        Employee?     @relation(fields: [employee_id], references: [id])
   created_by      Int?
-  created_by_user User?           @relation(fields: [created_by], references: [id])
-  created_at      DateTime        @default(now())
-  updated_at      DateTime        @updatedAt
+  created_by_user User?         @relation(fields: [created_by], references: [id])
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
   logs            ActivityLog[]
 }
 
@@ -294,7 +266,6 @@ model Group {
   nome            String
   lider_id        Int
   descricao       String?
-  events          Event[]
   created_by      Int?
   created_by_user User?    @relation(fields: [created_by], references: [id])
   created_at      DateTime @default(now())

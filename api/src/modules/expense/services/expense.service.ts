@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import ExpenseRepository from '../repository/expense.repository';
 import { CreateExpenseDto, UpdateExpenseDto } from '../dto/expense.dto';
 import { Expense } from '../entities/expense.entity';
@@ -18,28 +14,6 @@ export class ExpenseService {
   ) {}
 
   async create(data: CreateExpenseDto): Promise<Expense> {
-    // Lógica de Negócios 1: Validação de dependências (Evento, se fornecido)
-    if (data.evento_id) {
-      await this.eventService.findById(data.evento_id).catch(() => {
-        throw new NotFoundException(
-          `Evento com ID ${data.evento_id} não encontrado.`,
-        );
-      });
-      if (data.evento_id < 1)
-        throw new BadRequestException('ID de Evento inválido.');
-    }
-
-    // Lógica de Negócios 2: Validação de dependências (Funcionário, se fornecido)
-    if (data.employee_id) {
-      await this.employeeService.findById(data.employee_id).catch(() => {
-        throw new NotFoundException(
-          `Funcionário com ID ${data.employee_id} não encontrado.`,
-        );
-      });
-      if (data.employee_id < 1)
-        throw new BadRequestException('ID de Funcionário inválido.');
-    }
-
     return this.expenseRepository.create(data);
   }
 
@@ -53,17 +27,6 @@ export class ExpenseService {
 
   async update(id: number, data: UpdateExpenseDto): Promise<Expense> {
     // Validação de dependências (Evento, se alterado)
-    if (data.evento_id) {
-      if (data.evento_id < 1)
-        throw new BadRequestException('ID de Evento inválido.');
-    }
-
-    // Validação de dependências (Funcionário, se alterado)
-    if (data.employee_id) {
-      if (data.employee_id < 1)
-        throw new BadRequestException('ID de Funcionário inválido.');
-    }
-
     return this.expenseRepository.update(id, data);
   }
 

@@ -1,31 +1,35 @@
-export enum DomainEventType {
-  CULTOS = 'CULTOS',
-  REUNIOES = 'REUNIOES',
-  CONFERENCIAS = 'CONFERENCIAS',
-  CELEBRACAO = 'CELEBRACAO',
-  ESPECIAIS = 'ESPECIAIS',
-  OUTROS = 'OUTROS',
+export enum EventStatus {
+  PLANEJADO = 'Planejado',
+  REALIZANDO = 'Realizando',
+  CONCLUIDO = 'Concluído',
+  CANCELADO = 'Cancelado',
 }
 
-export enum DomainEventStatus {
-  PROGRAMADO = 'PROGRAMADO',
-  EM_ANDAMENTO = 'EM_ANDAMENTO',
-  FINALIZADO = 'FINALIZADO',
-  CANCELADO = 'CANCELADO',
+export enum EventType {
+  GERAL = 'Geral',
+  REUNIAO = 'Reunião',
+  CULTO = 'Culto',
+  SOCIAL = 'Social',
+  CONFERENCIA = 'Conferência',
+  VIGILIA = 'Vigília',
+  MUSICAL = 'Musical',
+  ADMINISTRATIVO = 'Administrativo',
+  EVENTO_ESPECIAL = 'Evento Especial',
+  OUTRO = 'Outro',
 }
 
 export class Event {
   id: number;
   nome: string;
   descricao: string | null;
-  data_inicio: Date;
-  data_fim: Date;
+  data: Date;
+  horaio: string;
   local: string | null;
-  // responsavel_member_id: number | null; // Chave estrangeira para o Membro
-  tipo: DomainEventType;
-  status: DomainEventStatus;
-
-  created_by: number | null;
+  orcamento: number;
+  observacoes: string | null;
+  tipo: EventType;
+  status: EventStatus;
+  created_by: number;
   created_at: Date;
   updated_at: Date;
 }

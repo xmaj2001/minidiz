@@ -5,11 +5,12 @@ import { EventController } from './controllers/event.controller';
 import EventRepository from './repository/event.repository';
 import { EventImplementation } from './repository/prisma/event.implementation';
 import { MemberModule } from '../members/member.module';
+import { UserModule } from '../users/user.module';
 
 @Module({
   controllers: [EventController],
   exports: [EventRepository, EventService],
-  imports: [MemberModule],
+  imports: [MemberModule, UserModule],
   providers: [
     EventService,
     PrismaService,

@@ -6,72 +6,64 @@ import {
   IsOptional,
   IsDateString,
 } from 'class-validator';
-import { DomainEventStatus, DomainEventType } from '../entities/event.entity';
+import { EventStatus, EventType } from '../entities/event.entity';
 
-// DTO de Criação
+// DTO para criação de evento
 export class CreateEventDto {
   @IsNotEmpty({ message: 'O título do evento é obrigatório.' })
   @IsString({ message: 'O título deve ser uma string.' })
   nome: string;
 
-  @IsOptional()
   @IsString({ message: 'A descrição deve ser uma string.' })
-  descricao?: string;
+  descricao: string;
 
-  @IsNotEmpty({ message: 'A data de início é obrigatória.' })
+  @IsNotEmpty({ message: 'A data é obrigatória.' })
   @IsDateString(
     {},
-    {
-      message: 'A data de início deve estar no formato ISO 8601 (AAAA-MM-DD).',
-    },
+    { message: 'A data deve estar no formato ISO 8601 (AAAA-MM-DD).' },
   )
-  data_inicio: string;
+  data: string;
 
-  @IsNotEmpty({ message: 'A data de término é obrigatória.' })
-  @IsDateString(
-    {},
-    {
-      message: 'A data de término deve estar no formato ISO 8601 (AAAA-MM-DD).',
-    },
-  )
-  data_fim: string;
+  @IsNotEmpty({ message: 'O horário é obrigatório.' })
+  @IsString({ message: 'O horário deve ser uma string.' })
+  horaio: string;
 
   @IsOptional()
   @IsString({ message: 'O local deve ser uma string.' })
-  local?: string;
+  local?: string | null;
+
+  @IsNotEmpty({ message: 'O orçamento é obrigatório.' })
+  @IsNumber({}, { message: 'O orçamento deve ser um número.' })
+  orcamento: number;
 
   @IsOptional()
-  @IsNumber(
-    {},
-    { message: 'O ID do membro responsável deve ser um número inteiro.' },
-  )
-  responsavel_member_id?: number;
+  @IsString({ message: 'As observações devem ser uma string.' })
+  observacoes?: string | null;
 
   @IsNotEmpty({ message: 'O tipo de evento é obrigatório.' })
-  @IsEnum(DomainEventType, {
-    message: `Tipo de evento inválido. Use: ${Object.values(DomainEventType).join(', ')}`,
+  @IsEnum(EventType, {
+    message: `Tipo de evento inválido. Use: ${Object.values(EventType).join(', ')}`,
   })
-  tipo: DomainEventType;
+  tipo: EventType;
 
   @IsNotEmpty({ message: 'O status do evento é obrigatório.' })
-  @IsEnum(DomainEventStatus, {
-    message: `Status inválido. Use: ${Object.values(DomainEventStatus).join(', ')}`,
+  @IsEnum(EventStatus, {
+    message: `Status inválido. Use: ${Object.values(EventStatus).join(', ')}`,
   })
-  status: DomainEventStatus;
+  status: EventStatus;
 
-  @IsOptional()
   @IsNumber(
     {},
     { message: 'O ID do usuário que registrou deve ser um número.' },
   )
-  created_by?: number;
+  created_by: number;
 }
 
-// DTO de Atualização
+// DTO para atualização de evento (todos opcionais)
 export class UpdateEventDto {
   @IsOptional()
   @IsString()
-  titulo?: string;
+  nome?: string;
 
   @IsOptional()
   @IsString()
@@ -79,25 +71,46 @@ export class UpdateEventDto {
 
   @IsOptional()
   @IsDateString()
-  data_inicio?: string;
-
-  @IsOptional()
-  @IsDateString()
-  data_fim?: string;
+  data?: string;
 
   @IsOptional()
   @IsString()
-  local?: string;
+  horaio?: string;
+
+  @IsOptional()
+  @IsString()
+  local?: string | null;
 
   @IsOptional()
   @IsNumber()
-  responsavel_member_id?: number;
+  orcamento?: number;
 
   @IsOptional()
-  @IsEnum(DomainEventType)
-  tipo?: DomainEventType;
+  @IsString()
+  observacoes?: string | null;
 
   @IsOptional()
-  @IsEnum(DomainEventStatus)
-  status?: DomainEventStatus;
+  @IsEnum(EventType)
+  tipo?: EventType;
+
+  @IsOptional()
+  @IsEnum(EventStatus)
+  status?: EventStatus;
+}
+
+// DTO completo (representação do recurso)
+export class EventDto {
+  id: number;
+  nome: string;
+  descricao: string | null;
+  data: string; // ISO date
+  horaio: string;
+  local: string | null;
+  orcamento: number;
+  observacoes: string | null;
+  tipo: EventType;
+  status: EventStatus;
+  created_by: number;
+  created_at: string; // ISO datetime
+  updated_at: string; // ISO datetime
 }
