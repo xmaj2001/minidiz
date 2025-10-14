@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import type { Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -77,15 +78,15 @@ export function RegisterContributionForm({
   const [isTransitioning, startTransition] = useTransition();
 
   const form = useForm<FormCreateDoacao>({
-    resolver: zodResolver(createDoacaoSchema),
+    resolver: zodResolver(createDoacaoSchema) as unknown as Resolver<
+      FormCreateDoacao,
+      unknown
+    >,
     defaultValues: {
       member_id: selectedMember.id,
-      valor: 0.01,
-      data: new Date().toISOString().split("T")[0],
-      metodo: "NENHUM",
-      status: "PENDENTE",
-      finalidade: "",
-      observacao: "",
+      data: (new Date()).toISOString().split("T")[0],
+      metodo: 'NENHUM',
+      status: 'PENDENTE',
       created_by: 1,
     },
     mode: "onChange",

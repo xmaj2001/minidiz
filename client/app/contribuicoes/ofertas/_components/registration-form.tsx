@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import type { Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -75,9 +76,8 @@ export function RegisterContributionForm({
   });
 
   const [isTransitioning, startTransition] = useTransition();
-
   const form = useForm<FormCreateOferta>({
-    resolver: zodResolver(createOfertaSchema),
+    resolver: zodResolver(createOfertaSchema) as Resolver<FormCreateOferta>,
     defaultValues: {
       member_id: selectedMember.id,
       valor: 0.01,
