@@ -32,17 +32,17 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
+  CreateExpenseData,
   ExpenseCategory,
   ExpenseStatus,
   IExpense,
   PaymentMethod,
 } from "@/lib/interfaces/expense.interface";
-import { use, useActionState, useEffect, useTransition } from "react";
+import { useEffect } from "react";
 import {
   CreateExpenseSchema,
   FormCreateExpense,
 } from "@/lib/schemas/expense.schema";
-import { RegisterActionDespesa, StateFormAction } from "../actions";
 import {
   Form,
   FormField,
@@ -50,6 +50,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { useExpenseMutations } from "@/hooks/use-expense-motation";
 
 interface DialogFormProps {
   isDialogOpen: boolean;
@@ -60,23 +62,24 @@ interface DialogFormProps {
 }
 
 const getCategoriaToEnum = (categoria: string) => {
-  const res = Object.values(ExpenseCategory).find(
-    (cat) => cat === categoria
+  return (
+    Object.values(ExpenseCategory).find((cat) => cat === categoria) ||
+    ExpenseCategory.OUTRO
   );
-  if (res) return res;
-  return ExpenseCategory.OUTRO;
 };
 
 const getStatusToEnum = (status: string) => {
-  const res = Object.values(ExpenseStatus).find((st) => st === status);
-  if (res) return res;
-  return ExpenseStatus.PENDENTE;
+  return (
+    Object.values(ExpenseStatus).find((st) => st === status) ||
+    ExpenseStatus.PENDENTE
+  );
 };
 
 const getPaymentMethodToEnum = (method: string) => {
-  const res = Object.values(PaymentMethod).find((m) => m === method);
-  if (res) return res;
-  return PaymentMethod.DINHEIRO;
+  return (
+    Object.values(PaymentMethod).find((m) => m === method) ||
+    PaymentMethod.DINHEIRO
+  );
 };
 
 export function DialogForm({
@@ -86,55 +89,80 @@ export function DialogForm({
   selectedDate,
   setSelectedDate,
 }: DialogFormProps) {
-  const [state, formAction, isPending] = useActionState<
-    StateFormAction,
-    FormCreateExpense
-  >(RegisterActionDespesa, {
-    success: null,
-    info: { title: "", message: "", error: null },
-  });
-
-  const [isTransitioning, startTransition] = useTransition();
+  const { saveExpense, isSaving } = useExpenseMutations();
+  const { toast } = useToast();
 
   const form = useForm<FormCreateExpense>({
     resolver: zodResolver(CreateExpenseSchema),
     defaultValues: {
-      descricao: editingDespesa?.descricao || "",
-      categoria:
-        getCategoriaToEnum(editingDespesa?.categoria ?? "") ||
-        ExpenseCategory.OUTRO,
-      valor: editingDespesa?.valor || 0,
-      data: editingDespesa
-        ? format(new Date(editingDespesa.data), "yyyy-MM-dd")
-        : "",
-      // fornecedor: editingDespesa?.fornecedor || "",
-      forma_pagamento:
-        getPaymentMethodToEnum(editingDespesa?.forma_pagamento?? '') ||
-        PaymentMethod.DINHEIRO,
-      status: getStatusToEnum(editingDespesa?.status?? '') || ExpenseStatus.PENDENTE,
-      // numeroNF: editingDespesa?.numeroNF || "",
-      observacao: editingDespesa?.observacao || "",
-      created_by: 1,
+      descricao: "",
+      categoria: ExpenseCategory.OUTRO,
+      valor: 0,
+      data: "",
+      forma_pagamento: PaymentMethod.DINHEIRO,
+      status: ExpenseStatus.PENDENTE,
+      observacao: "",
+      created_by: 1
     },
   });
 
-  const { isSubmitting } = form.formState;
-  const isLoading = isPending || isTransitioning || isSubmitting;
-  // Handle success
-
-  const handleSubmit = (values: FormCreateExpense) => {
-    startTransition(() => {
-      formAction(values);
-    });
-  };
-
   useEffect(() => {
-    if (state.success) {
+    if (editingDespesa) {
+      form.reset({
+        descricao: editingDespesa.descricao,
+        categoria: getCategoriaToEnum(editingDespesa.categoria),
+        valor: editingDespesa.valor,
+        data: format(new Date(editingDespesa.data), "yyyy-MM-dd"),
+        forma_pagamento: getPaymentMethodToEnum(editingDespesa.forma_pagamento),
+        status: getStatusToEnum(editingDespesa.status),
+        observacao: editingDespesa.observacao,
+        // created_by: editingDespesa.created_by,
+      });
+      setSelectedDate(new Date(editingDespesa.data));
+    } else {
+      form.reset();
+      setSelectedDate(undefined);
+    }
+  }, [editingDespesa, form, setSelectedDate]);
+
+  const handleSubmit = form.handleSubmit(async (values) => {
+    // const payload = editingDespesa ? { ...values, id: editingDespesa.id } : values;
+    const payload: CreateExpenseData = {
+      descricao: values.descricao,
+      valor: values.valor,
+      data: format(new Date(values.data), "yyyy-MM-dd"),
+      categoria: values.categoria,
+      observacao: values.observacao ?? undefined,
+      created_by: values.created_by,
+      status: values.status,
+      forma_pagamento: values.forma_pagamento,
+    };
+
+    try {
+      await saveExpense(payload);
+
+      // Sucesso:
+      toast({
+        title: "Sucesso!",
+        description: `Despesa ${
+          editingDespesa ? "atualizada" : "registrada"
+        } com sucesso.`,
+      });
+
       form.reset();
       setSelectedDate(undefined);
       setIsDialogOpen(false);
+    } catch (error) {
+      // Erro:
+      toast({
+        title: "Erro ao Salvar",
+        description: "Não foi possível completar a operação. Tente novamente.",
+        variant: "destructive",
+      });
     }
-  }, [state]);
+  });
+
+  const isLoading = isSaving || form.formState.isSubmitting;
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -152,23 +180,24 @@ export function DialogForm({
         <Form {...form}>
           <form
             id="despesa-form"
-            onSubmit={form.handleSubmit(handleSubmit)}
+            onSubmit={handleSubmit} // Usa o handleSubmit com o useMutation
             className="space-y-4"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* DESCRIÇÃO */}
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="descricao">Descrição</Label>
                 <Input
                   id="descricao"
                   {...form.register("descricao")}
                   placeholder="Descrição da despesa"
-                  defaultValue={editingDespesa?.descricao}
                 />
                 <p className="text-sm text-red-600">
                   {form.formState.errors.descricao?.message}
                 </p>
               </div>
 
+              {/* CATEGORIA */}
               <div className="space-y-2">
                 <FormField
                   name="categoria"
@@ -197,6 +226,7 @@ export function DialogForm({
                 />
               </div>
 
+              {/* VALOR */}
               <div className="space-y-2">
                 <Label htmlFor="valor">Valor</Label>
                 <Input
@@ -205,13 +235,13 @@ export function DialogForm({
                   step="0.01"
                   placeholder="0,00"
                   {...form.register("valor", { valueAsNumber: true })}
-                  defaultValue={editingDespesa?.valor}
                 />
                 <p className="text-sm text-red-600">
                   {form.formState.errors.valor?.message}
                 </p>
               </div>
 
+              {/* DATA */}
               <div className="space-y-2">
                 <Label htmlFor="data">Data</Label>
                 <Popover>
@@ -252,15 +282,17 @@ export function DialogForm({
                 </p>
               </div>
 
-              <div className="space-y-2">
+              {/* FORNECEDOR (Use register se estiver no schema) */}
+              {/* <div className="space-y-2">
                 <Label htmlFor="fornecedor">Fornecedor</Label>
                 <Input
                   id="fornecedor"
                   placeholder="Nome do fornecedor"
-                  defaultValue={editingDespesa?.fornecedor ?? ""}
+                  {...form.register("fornecedor")}
                 />
-              </div>
+              </div> */}
 
+              {/* FORMA DE PAGAMENTO */}
               <div className="space-y-2">
                 <FormField
                   name="forma_pagamento"
@@ -289,6 +321,7 @@ export function DialogForm({
                 />
               </div>
 
+              {/* STATUS */}
               <div className="space-y-2">
                 <FormField
                   name="status"
@@ -317,15 +350,7 @@ export function DialogForm({
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="numeroNF">Número da NF (opcional)</Label>
-                {/* <Input
-                  id="numeroNF"
-                  placeholder="NF-2024-001"
-                  defaultValue={editingDespesa?.numeroNF ?? ""}
-                /> */}
-              </div>
-
+              {/* OBSERVAÇÕES */}
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="observacoes">Observações</Label>
                 <Textarea
@@ -333,7 +358,6 @@ export function DialogForm({
                   rows={4}
                   {...form.register("observacao")}
                   placeholder="Informações adicionais sobre a despesa"
-                  defaultValue={editingDespesa?.observacao ?? ""}
                 />
                 <p className="text-sm text-red-600">
                   {form.formState.errors.observacao?.message}
@@ -342,11 +366,19 @@ export function DialogForm({
             </div>
 
             <div className="flex justify-end gap-2 mt-6">
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+                type="button"
+              >
                 Cancelar
               </Button>
-              <Button disabled={isLoading}>
-                {editingDespesa ? "Salvar Alterações" : "Registrar Despesa"}
+              <Button type="submit" disabled={isLoading}>
+                {isLoading
+                  ? "Salvando..."
+                  : editingDespesa
+                  ? "Salvar Alterações"
+                  : "Registrar Despesa"}
               </Button>
             </div>
           </form>

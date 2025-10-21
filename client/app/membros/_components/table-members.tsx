@@ -50,7 +50,7 @@ export const TableMember = ({
   };
 
   return (
-    <Card className="border border-primary">
+    <Card className="">
       <CardHeader>
         <CardTitle>Lista de Membros</CardTitle>
         <CardDescription>{data.length} membro(s) encontrado(s)</CardDescription>

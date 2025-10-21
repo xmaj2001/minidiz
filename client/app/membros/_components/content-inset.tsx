@@ -3,35 +3,40 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { TableMember } from "./table-members";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { IMember } from "@/lib/interfaces/member.interface";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import MemberRegistrationForm from "./registration-form";
 import { HeaderMember } from "./header";
 import { FilterMember } from "./filter";
 import { useState } from "react";
 import { Loader, Plus } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { MemberServices } from "@/lib/services/member.service";
+import { API_STALE_TIME } from "@/config/settings";
 
-interface ContentInsetProps {
-  data: IMember[];
-}
-
-export default function ContentInset({ data }: ContentInsetProps) {
+export default function ContentInset() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("todos");
-  const [grupoFilter, setGrupoFilter] = useState("todos");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-  const [editingMembro, setEditingMembro] = useState<IMember | null>(null);
 
+  const {
+    data: membros,
+    isLoading,
+    isError,
+  } = useQuery<IMember[]>({
+    queryKey: [
+      "members",
+      {
+        searchTerm,
+        status: statusFilter,
+      },
+    ],
+    queryFn: () => MemberServices.listPaginate().then((res) => res.result),
+    staleTime: API_STALE_TIME.members.list,
+  });
+
+   const data = membros || [];
   // Filtrar membros
   const filteredMembros = data.filter((membro) => {
     const matchesSearch =
@@ -40,20 +45,23 @@ export default function ContentInset({ data }: ContentInsetProps) {
     const matchesStatus =
       statusFilter === "todos" || membro.status.toLowerCase() === statusFilter;
     // const matchesGrupo = grupoFilter === "todos" || membro.grupo.toLowerCase() === grupoFilter.toLowerCase()
-
     return matchesSearch && matchesStatus;
     // && matchesGrupo
   });
 
   const handleEditMembro = (membro: IMember) => {
-    setEditingMembro(membro);
+    // setEditingMembro(membro);
     setIsDialogOpen(true);
   };
 
   const handleDeleteMembro = (id: number) => {};
   return (
     <SidebarInset>
-      <Drawer direction="right" open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Drawer
+        direction="right"
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+      >
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex w-full gap-2 px-4">
             {/* <SidebarTrigger className="-ml-1" />
@@ -97,7 +105,11 @@ export default function ContentInset({ data }: ContentInsetProps) {
             oneDeleteMembro={handleDeleteMembro}
           />
         </div>
-        <Button disabled={isCreating} className="absolute bottom-8 right-8 rounded-full" onClick={()=> setIsDialogOpen(true)}>
+        <Button
+          disabled={isCreating}
+          className="fixed bottom-8 right-8 rounded-full h-12 w-12 p-0"
+          onClick={() => setIsDialogOpen(true)}
+        >
           {isCreating ? <Loader className="animate-spin" /> : <Plus />}
         </Button>
         <DrawerContent>

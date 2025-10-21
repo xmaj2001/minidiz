@@ -1,5 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowDownIcon, ArrowUpIcon, TrendingUp, Users, Wallet } from "lucide-react";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  TrendingUp,
+  Users,
+  Wallet,
+} from "lucide-react";
 
 const stats = [
   {
@@ -23,29 +29,26 @@ const stats = [
     trend: "up",
     icon: Wallet,
   },
-  {
-    title: "Membros Ativos",
-    value: "342",
-    change: "+23",
-    trend: "up",
-    icon: Users,
-  },
 ];
-
 
 export const HeaderMember = () => {
   return (
-    <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-4 mt-5">
+    <div className="grid auto-rows-min gap-4 md:grid-cols-3 mt-10">
       {stats.map((stat) => (
-        <Card key={stat.title} className="border-primary border-2">
+        <Card
+          key={stat.title}
+          className="bg-primary hover:bg-white/10 transition-colors
+       group
+        "
+        >
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-foreground">
+            <CardTitle className="text-sm font-medium text-white">
               {stat.title}
             </CardTitle>
             <stat.icon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-primary">{stat.value}</div>
+          <CardContent className="">
+            <div className="text-2xl font-bold text-white">{stat.value}</div>
             <div className="flex items-center gap-1 text-xs">
               {stat.trend === "up" ? (
                 <ArrowUpIcon className="h-3 w-3 text-green-500" />

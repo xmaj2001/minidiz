@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import {
+  Bot,
   Building,
   FileText,
   Plus,
@@ -11,9 +12,8 @@ import {
   Wrench,
   Zap,
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { IExpense } from "@/lib/interfaces/expense.interface";
-import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -25,51 +25,81 @@ import { StatsCards } from "./statsCards";
 import { Filter } from "./filter";
 import { TableData } from "./table";
 import { DialogForm } from "./dialog-form";
+import { useQuery } from "@tanstack/react-query";
+import { ExpenseServices } from "@/lib/services/expense.service";
+import { AIChatAssistant } from "@/components/ai-chat-assistant";
+import { API_STALE_TIME } from "@/config/settings";
 
-interface ContentInsetProps {
-  data: IExpense[];
-}
-
-export default function ContentInset({ data }: ContentInsetProps) {
+export default function ContentInset() {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoriaFilter, setCategoriaFilter] = useState("todos");
   const [statusFilter, setStatusFilter] = useState("todos");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingDespesa, setEditingDespesa] = useState<IExpense | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
-  // Filtrar despesas
-  const filteredDespesas = data.filter((despesa) => {
-    const matchesSearch =
-      despesa.descricao.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      despesa.fornecedor?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      despesa.observacao?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategoria =
-      categoriaFilter === "todos" ||
-      despesa.categoria.toLowerCase() === categoriaFilter;
-    const matchesStatus =
-      statusFilter === "todos" || despesa.status.toLowerCase() === statusFilter;
-
-    return matchesSearch && matchesCategoria && matchesStatus;
+  const {
+    data: despesas,
+    isLoading,
+    isError,
+  } = useQuery<IExpense[]>({
+    queryKey: [
+      "expenses",
+      {
+        searchTerm,
+        categoria: categoriaFilter,
+        status: statusFilter,
+      },
+    ],
+    queryFn: () => ExpenseServices.listPaginate().then((res) => res.result),
+    staleTime: API_STALE_TIME.expenses.list,
   });
 
-  // Calcular totais
-  const totalDespesas = data.reduce(
-    (total, despesa) => total + despesa.valor,
-    0
-  );
-  const despesasPagas = data
-    .filter((d) => d.status === "Pago")
-    .reduce((total, despesa) => total + despesa.valor, 0);
-  const despesasPendentes = data
-    .filter((d) => d.status === "Pendente")
-    .reduce((total, despesa) => total + despesa.valor, 0);
+  const data = despesas || [];
 
-  // Agrupar por categoria
-  const despesasPorCategoria = data.reduce((acc, despesa) => {
-    acc[despesa.categoria] = (acc[despesa.categoria] || 0) + despesa.valor;
-    return acc;
-  }, {} as Record<string, number>);
+  // 2. Cálculos de Estatísticas (Use useMemo para evitar recalcular a cada render)
+  // Nota: Idealmente, as estatísticas viriam de um endpoint separado (expenseSummary)
+  // com um useQuery próprio para melhor performance e cache. Mas mantemos aqui por simplicidade.
+  const {
+    totalDespesas,
+    despesasPagas,
+    despesasPendentes,
+    despesasPorCategoria,
+  } = useMemo(() => {
+    // TODOS os cálculos agora são feitos sobre 'data' (que vem da API/Cache)
+    const total = data.reduce((total, d) => total + d.valor, 0);
+
+    const pagas = data
+      .filter((d) => d.status === "Pago")
+      .reduce((total, d) => total + d.valor, 0);
+
+    const pendentes = data
+      .filter((d) => d.status === "Pendente")
+      .reduce((total, d) => total + d.valor, 0);
+
+    const porCategoria = data.reduce((acc, despesa) => {
+      acc[despesa.categoria] = (acc[despesa.categoria] || 0) + despesa.valor;
+      return acc;
+    }, {} as Record<string, number>);
+
+    return {
+      totalDespesas: total,
+      despesasPagas: pagas,
+      despesasPendentes: pendentes,
+      despesasPorCategoria: porCategoria,
+    };
+  }, [data]); // Recalcula SÓ quando a lista 'data' muda
+
+  // Se 'isLoading' for true (primeiro carregamento), exibe um loading state
+
+  if (isError) {
+    return (
+      <div className="p-8 text-center text-red-500">
+        Erro ao carregar despesas.
+      </div>
+    );
+  }
 
   const handleAddDespesa = () => {
     setEditingDespesa(null);
@@ -84,24 +114,6 @@ export default function ContentInset({ data }: ContentInsetProps) {
   const handleDeleteDespesa = (id: number) => {
     // Implementar lógica de exclusão aqui
     alert(`Excluir despesa com ID: ${id}`);
-  };
-
-  const getStatusBadge = (status: string) => {
-    return status === "Pago" ? (
-      <Badge
-        variant="default"
-        className="bg-secondary text-secondary-foreground"
-      >
-        Pago
-      </Badge>
-    ) : (
-      <Badge
-        variant="secondary"
-        className="bg-destructive text-destructive-foreground"
-      >
-        Pendente
-      </Badge>
-    );
   };
 
   const getCategoriaIcon = (categoria: string) => {
@@ -129,10 +141,7 @@ export default function ContentInset({ data }: ContentInsetProps) {
             Controle completo das despesas da igreja
           </p>
         </div>
-        <Button onClick={handleAddDespesa}>
-          <Plus className="h-4 w-4 mr-2" />
-          Nova Despesa
-        </Button>
+        
       </div>
 
       {/* Cards de Resumo */}
@@ -193,7 +202,8 @@ export default function ContentInset({ data }: ContentInsetProps) {
 
       {/* Tabela de Despesas */}
       <TableData
-        data={filteredDespesas}
+        data={data}
+        isLoading={isLoading}
         onEdit={handleEditDespesa}
         onDelete={handleDeleteDespesa}
       />
@@ -206,7 +216,22 @@ export default function ContentInset({ data }: ContentInsetProps) {
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
       />
-      
+      {/* Botão Flutuante do Assistente de IA */}
+      <div className="fixed bottom-8 right-8  transition-transform flex flex-col gap-4 items-center">
+        <Button
+          className="rounded-full bg-purple-400/25 border-primary border-2 h-12 w-12 shadow-lg z-40 transition-transform hover:scale-105"
+          onClick={() => setIsChatOpen(true)}
+          aria-label="Abrir Assistente de IA"
+        >
+          <Bot className="h-6 w-6" />
+        </Button>
+        <Button title="Nova Despesa" className="rounded-full h-14 w-14" onClick={handleAddDespesa}>
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Componente Assistente de IA (Visível quando isChatOpen é true) */}
+      {isChatOpen && <AIChatAssistant onClose={() => setIsChatOpen(false)} />}
     </div>
   );
 }

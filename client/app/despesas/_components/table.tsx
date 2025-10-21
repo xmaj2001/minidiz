@@ -19,8 +19,10 @@ import {
 
 import { Building, Edit, FileText, Receipt, ShoppingCart, Trash2, Users, Wrench, Zap } from "lucide-react";
 import { IExpense } from "@/lib/interfaces/expense.interface";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TableProps {
+  isLoading: boolean;
   data: IExpense[];
   onEdit: (data: IExpense) => void;
   onDelete: (id: number) => void;
@@ -28,6 +30,7 @@ interface TableProps {
 
 export const TableData = ({
   data,
+  isLoading,
   onDelete,
   onEdit,
 }: TableProps) => {
@@ -83,7 +86,33 @@ export const TableData = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((despesa) => (
+              {/* skeleton loading state */}
+              {isLoading && Array.from({ length: 5 }).map((_, index) => (
+                <TableRow key={index} className="animate-pulse">
+                  <TableCell>
+                    <Skeleton className="h-4 w-48 bg-gray-300 rounded" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-24 bg-gray-300 rounded" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-20 bg-gray-300 rounded" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-20 bg-gray-300 rounded" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-28 bg-gray-300 rounded" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-16 bg-gray-300 rounded" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-24 bg-gray-300 rounded" />
+                  </TableCell>
+                </TableRow>
+              ))}
+              {!isLoading && data.map((despesa) => (
                 <TableRow key={despesa.id}>
                   <TableCell>
                     <div>
