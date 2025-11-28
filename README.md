@@ -42,5 +42,3 @@ A plataforma permite que a igreja central gerencie múltiplas paróquias espalha
 
 ---
 
-## 📁 Estrutura do Projeto *(base proposta)*
-
