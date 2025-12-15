@@ -1,7 +1,6 @@
-
+import { getMaritalStatusBadge } from "@/components/member/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,37 +16,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IMember, StatusMember } from "@/lib/interfaces/member.interface";
-import { Edit, Mail, Phone, Trash2, UserCheck, UserX } from "lucide-react";
+import { IMember } from "@/http/member/member.interface";
+import { Mail, Phone,} from "lucide-react";
 
 interface TableMemberProps {
   data: IMember[];
-  onEditMembro: (data: IMember) => void;
-  oneDeleteMembro: (id: number) => void;
+  onSelect: (data: IMember) => void;
 }
 
 export const TableMember = ({
   data,
-  oneDeleteMembro,
-  onEditMembro,
+  onSelect,
 }: TableMemberProps) => {
-
-  const getStatusBadge = (status: StatusMember) => {
-    return status == 'ATIVO' ? (
-      <Badge
-        variant="secondary"
-        className="bg-primary text-white"
-      >
-        <UserCheck className="h-3 w-3 mr-1" />
-        Ativo
-      </Badge>
-    ) : (
-      <Badge variant="secondary" className="bg-muted text-muted-foreground">
-        <UserX className="h-3 w-3 mr-1" />
-        Inativo
-      </Badge>
-    );
-  };
+  
 
   return (
     <Card className="">
@@ -60,36 +41,43 @@ export const TableMember = ({
           <TableHeader>
             <TableRow>
               <TableHead>Membro</TableHead>
+              <TableHead>Estado Civil</TableHead>
               <TableHead>Contato</TableHead>
-              <TableHead>Genero</TableHead>
-              <TableHead>Grupo</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Ações</TableHead>
+              <TableHead>Paróquia</TableHead>
+              <TableHead>Batismo</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.map((membro) => (
-              <TableRow key={membro.id}>
+              <TableRow key={membro.id} onClick={() => onSelect(membro)}>
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Avatar>
                       <AvatarImage
-                        src={`/abstract-geometric-shapes.png?height=32&width=32&query=${membro.nome}`}
+                        src={`/abstract-geometric-shapes.png?height=32&width=32&query=${membro.name}`}
                       />
-                      <AvatarFallback>
-                        {membro.nome + " " + membro.sobreNome}
-                      </AvatarFallback>
+                      <AvatarFallback>{membro.name}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium">{membro.nome}</div>
+                      <div className="font-medium">{membro.name}</div>
                       <div className="text-sm text-muted-foreground">
+                        <p className="font-medium">
+                          <span>
+                            <b>Genero:</b> {membro.gender}
+                          </span>
+                          {" "}
+                          <span>
+                            <b>Idade:</b> {membro.age}
+                          </span>
+                        </p>
                         Membro desde{" "}
-                        {new Date(membro.data_cadastro).toLocaleDateString(
-                          "pt-BR"
-                        )}
+                        {new Date(membro.createdAt).toLocaleDateString("pt-BR")}
                       </div>
                     </div>
                   </div>
+                </TableCell>
+                <TableCell>
+                  {getMaritalStatusBadge(membro.maritalStatus ?? "")}
                 </TableCell>
                 <TableCell>
                   <div className="space-y-1">
@@ -99,31 +87,34 @@ export const TableMember = ({
                     </div>
                     <div className="flex items-center gap-1 text-sm">
                       <Phone className="h-3 w-3" />
-                      {membro.telefone}
+                      {membro.phone}
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>{membro.genero}</TableCell>
                 <TableCell>
-                  <Badge variant="outline">{`Esta em (${membro.grupos_membro.length})`}</Badge>
+                  <Badge variant="outline">{"Nomde da paróquia"}</Badge>
                 </TableCell>
-                <TableCell>{getStatusBadge(membro.status)}</TableCell>
+
+                {/* <TableCell>
+                  <Badge variant="outline">{`Esta em (${membro.groups.length})`}</Badge>
+                </TableCell> */}
+
                 <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onEditMembro(membro)}
-                    >
-                      <Edit className="h-3 w-3" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => oneDeleteMembro(membro.id)}
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1 text-sm">
+                      {membro.isBaptized ? (
+                        <Badge variant="secondary">{`Batizado`}</Badge>
+                      ) : (
+                        <Badge variant="outline">{`Não batizado`}</Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 text-sm">
+                      {membro.isConfirmed? (
+                        <Badge variant="default">{`Batismo confirmado`}</Badge>
+                      ): (
+                        <Badge variant="destructive">{`Batismo não confirmado`}</Badge>
+                      )}
+                    </div>
                   </div>
                 </TableCell>
               </TableRow>

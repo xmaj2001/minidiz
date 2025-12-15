@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { useState } from "react";
 import {
@@ -33,6 +33,8 @@ import {
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Toaster } from "@/components/ui/toaster";
+import { gruposData } from "@/http/group/group.service";
+import { IGroup } from "@/http/group/group.interface";
 
 // Dados mockados dos grupos
 type Grupo = {
@@ -47,64 +49,17 @@ type Grupo = {
   observacoes: string;
 };
 
-const gruposData: Grupo[] = [
-  {
-    id: 1,
-    nome: "Jovens",
-    descricao: "Grupo de jovens da igreja, idades entre 18-35 anos",
-    lider: "João Silva",
-    membros: 45,
-    ativo: true,
-    dataCreacao: "2020-01-15",
-    proximaReuniao: "2024-12-20",
-    observacoes: "Reuniões aos sábados às 19h",
-  },
-  {
-    id: 2,
-    nome: "Mulheres",
-    descricao: "Grupo de mulheres para estudos bíblicos e comunhão",
-    lider: "Maria Santos",
-    membros: 32,
-    ativo: true,
-    dataCreacao: "2018-03-10",
-    proximaReuniao: "2024-12-18",
-    observacoes: "Reuniões às terças-feiras às 14h",
-  },
-  {
-    id: 3,
-    nome: "Homens",
-    descricao: "Grupo de homens para estudos e atividades",
-    lider: "Pedro Costa",
-    membros: 28,
-    ativo: true,
-    dataCreacao: "2019-05-20",
-    proximaReuniao: "2024-12-22",
-    observacoes: "Reuniões aos domingos após o culto",
-  },
-  {
-    id: 4,
-    nome: "Crianças",
-    descricao: "Ministério infantil para crianças de 4-12 anos",
-    lider: "Ana Oliveira",
-    membros: 67,
-    ativo: true,
-    dataCreacao: "2017-08-05",
-    proximaReuniao: "2024-12-19",
-    observacoes: "Atividades aos domingos durante o culto",
-  },
-];
 
 export default function GruposPage() {
-  const [grupos, setGrupos] = useState<Grupo[]>(gruposData);
+  const [grupos, setGrupos] = useState<IGroup[]>(gruposData);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingGrupo, setEditingGrupo] = useState<Grupo | null>(null);
+  const [editingGrupo, setEditingGrupo] = useState<IGroup | null>(null);
 
   // Filtrar grupos
   const filteredGrupos = grupos.filter(
     (grupo) =>
-      grupo.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      grupo.descricao.toLowerCase().includes(searchTerm.toLowerCase())
+      grupo.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleAddGrupo = () => {
@@ -112,17 +67,16 @@ export default function GruposPage() {
     setIsDialogOpen(true);
   };
 
-  const handleEditGrupo = (grupo: Grupo) => {
+  const handleEditGrupo = (grupo: IGroup) => {
     setEditingGrupo(grupo);
     setIsDialogOpen(true);
   };
 
-  const handleDeleteGrupo = (id: number) => {
-    setGrupos(grupos.filter((g) => g.id !== id));
+  const handleDeleteGrupo = (id: string) => {
   };
 
   const totalMembros = grupos.reduce(
-    (total, grupo) => total + grupo.membros,
+    (total, grupo) => total + 1,
     0
   );
 
@@ -169,7 +123,7 @@ export default function GruposPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {grupos.filter((g) => g.ativo).length}
+                {/* {grupos.filter((g) => g.ativo).length} */}
               </div>
             </CardContent>
           </Card>
@@ -225,31 +179,27 @@ export default function GruposPage() {
             <Card key={grupo.id} className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">{grupo.nome}</CardTitle>
-                  <Badge variant={grupo.ativo ? "default" : "secondary"}>
-                    {grupo.ativo ? "Ativo" : "Inativo"}
+                  <CardTitle className="text-lg">{grupo.name}</CardTitle>
+                  <Badge variant={"secondary"}>
+                    Ativo
                   </Badge>
                 </div>
-                <CardDescription>{grupo.descricao}</CardDescription>
+                <CardDescription>xxxxxxxxxxxxxxxxxxxxxx</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-2">
                   <Avatar className="h-8 w-8">
                     <AvatarImage
-                      src={`/abstract-geometric-shapes.png?height=32&width=32&query=${grupo.lider}`}
+                      src={`/abstract-geometric-shapes.png?height=32&width=32&query=${"ww"}`}
                     />
                     <AvatarFallback>
-                      {grupo.lider
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()}
+                      
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-medium">Líder: {grupo.lider}</p>
+                    <p className="text-sm font-medium">Líder: {"eu"}</p>
                     <p className="text-xs text-muted-foreground">
-                      {grupo.membros} membros
+                      {0} membros
                     </p>
                   </div>
                 </div>
@@ -259,13 +209,10 @@ export default function GruposPage() {
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <span>
                       Próxima reunião:{" "}
-                      {new Date(grupo.proximaReuniao).toLocaleDateString(
-                        "pt-BR"
-                      )}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {grupo.observacoes}
+                    {"axaxaxaxaxxaaxaxax"}
                   </p>
                 </div>
 
@@ -312,7 +259,7 @@ export default function GruposPage() {
                 <Input
                   id="nome"
                   placeholder="Digite o nome do grupo"
-                  defaultValue={editingGrupo?.nome}
+                  defaultValue={""}
                 />
               </div>
 
@@ -321,7 +268,7 @@ export default function GruposPage() {
                 <Input
                   id="lider"
                   placeholder="Nome do líder"
-                  defaultValue={editingGrupo?.lider}
+                  defaultValue={""}
                 />
               </div>
 
@@ -330,7 +277,7 @@ export default function GruposPage() {
                 <Textarea
                   id="descricao"
                   placeholder="Descreva o propósito e atividades do grupo"
-                  defaultValue={editingGrupo?.descricao}
+                  defaultValue={""}
                 />
               </div>
 
@@ -339,7 +286,7 @@ export default function GruposPage() {
                 <Input
                   id="proximaReuniao"
                   type="date"
-                  defaultValue={editingGrupo?.proximaReuniao}
+                  defaultValue={""}
                 />
               </div>
 
@@ -349,7 +296,7 @@ export default function GruposPage() {
                   id="membros"
                   type="number"
                   placeholder="0"
-                  defaultValue={editingGrupo?.membros}
+                  defaultValue={""}
                 />
               </div>
 
@@ -358,7 +305,7 @@ export default function GruposPage() {
                 <Textarea
                   id="observacoes"
                   placeholder="Horários de reunião, local, informações adicionais"
-                  defaultValue={editingGrupo?.observacoes}
+                  defaultValue={""}
                 />
               </div>
             </div>

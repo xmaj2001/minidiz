@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
-
+import { ToastProvider } from "@/components/ui/toast";
+/*
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -11,7 +12,7 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
+});*/
 
 export const metadata: Metadata = {
   title: "MiniDiz - Sistema de Gestão Financeira para Igrejas",
@@ -26,10 +27,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
+      {/* <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
-      >
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+      > */}
+      <body className={`antialiased dark`}>
+        <ReactQueryProvider>
+          {children}
+        </ReactQueryProvider>
+          <ToastProvider />
       </body>
     </html>
   );

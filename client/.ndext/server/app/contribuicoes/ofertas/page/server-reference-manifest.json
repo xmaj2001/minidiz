@@ -1,0 +1,35 @@
+{
+  "node": {
+    "0079254c9c89960ad3295e3db4bad76330be4f97ba": {
+      "workers": {
+        "app/contribuicoes/ofertas/page": {
+          "moduleId": "[project]/client/.next-internal/server/app/contribuicoes/ofertas/page/actions.js { ACTIONS_MODULE0 => \"[project]/client/app/contribuicoes/ofertas/page.tsx [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/client/app/contribuicoes/ofertas/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "default",
+          "filename": "client/app/contribuicoes/ofertas/page.tsx"
+        }
+      },
+      "layer": {
+        "app/contribuicoes/ofertas/page": "rsc"
+      },
+      "exportedName": "default",
+      "filename": "client/app/contribuicoes/ofertas/page.tsx"
+    },
+    "7f949b6a387d5473da48a735e0dc9d215660e6b61b": {
+      "workers": {
+        "app/contribuicoes/ofertas/page": {
+          "moduleId": "[project]/client/.next-internal/server/app/contribuicoes/ofertas/page/actions.js { ACTIONS_MODULE0 => \"[project]/client/app/contribuicoes/ofertas/page.tsx [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/client/app/contribuicoes/ofertas/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "RegisterActionContributions",
+          "filename": "client/app/contribuicoes/ofertas/actions.ts"
+        }
+      },
+      "layer": {
+        "app/contribuicoes/ofertas/page": "action-browser"
+      },
+      "exportedName": "RegisterActionContributions",
+      "filename": "client/app/contribuicoes/ofertas/actions.ts"
+    }
+  },
+  "edge": {}
+}

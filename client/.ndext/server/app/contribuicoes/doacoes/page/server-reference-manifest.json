@@ -1,0 +1,35 @@
+{
+  "node": {
+    "00af448c3b1a778b762938c62ea37d2c8fb7180012": {
+      "workers": {
+        "app/contribuicoes/doacoes/page": {
+          "moduleId": "[project]/client/.next-internal/server/app/contribuicoes/doacoes/page/actions.js { ACTIONS_MODULE0 => \"[project]/client/app/contribuicoes/doacoes/page.tsx [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/client/app/contribuicoes/doacoes/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "default",
+          "filename": "client/app/contribuicoes/doacoes/page.tsx"
+        }
+      },
+      "layer": {
+        "app/contribuicoes/doacoes/page": "rsc"
+      },
+      "exportedName": "default",
+      "filename": "client/app/contribuicoes/doacoes/page.tsx"
+    },
+    "7fa30949c49e6adb0a5b474696d4d026fd9e5eb517": {
+      "workers": {
+        "app/contribuicoes/doacoes/page": {
+          "moduleId": "[project]/client/.next-internal/server/app/contribuicoes/doacoes/page/actions.js { ACTIONS_MODULE0 => \"[project]/client/app/contribuicoes/doacoes/page.tsx [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/client/app/contribuicoes/doacoes/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "RegisterActionContributions",
+          "filename": "client/app/contribuicoes/doacoes/actions.ts"
+        }
+      },
+      "layer": {
+        "app/contribuicoes/doacoes/page": "action-browser"
+      },
+      "exportedName": "RegisterActionContributions",
+      "filename": "client/app/contribuicoes/doacoes/actions.ts"
+    }
+  },
+  "edge": {}
+}

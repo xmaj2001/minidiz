@@ -1,0 +1,35 @@
+{
+  "node": {
+    "00d77c1eae941aad908d3167eb387ebaae88421625": {
+      "workers": {
+        "app/contribuicoes/dizimos/page": {
+          "moduleId": "[project]/client/.next-internal/server/app/contribuicoes/dizimos/page/actions.js { ACTIONS_MODULE0 => \"[project]/client/app/contribuicoes/dizimos/page.tsx [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/client/app/contribuicoes/dizimos/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "default",
+          "filename": "client/app/contribuicoes/dizimos/page.tsx"
+        }
+      },
+      "layer": {
+        "app/contribuicoes/dizimos/page": "rsc"
+      },
+      "exportedName": "default",
+      "filename": "client/app/contribuicoes/dizimos/page.tsx"
+    },
+    "7fe1c9d193c277914ac7815277a215eafd4b273188": {
+      "workers": {
+        "app/contribuicoes/dizimos/page": {
+          "moduleId": "[project]/client/.next-internal/server/app/contribuicoes/dizimos/page/actions.js { ACTIONS_MODULE0 => \"[project]/client/app/contribuicoes/dizimos/page.tsx [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/client/app/contribuicoes/dizimos/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "RegisterActionContributions",
+          "filename": "client/app/contribuicoes/dizimos/actions.ts"
+        }
+      },
+      "layer": {
+        "app/contribuicoes/dizimos/page": "action-browser"
+      },
+      "exportedName": "RegisterActionContributions",
+      "filename": "client/app/contribuicoes/dizimos/actions.ts"
+    }
+  },
+  "edge": {}
+}

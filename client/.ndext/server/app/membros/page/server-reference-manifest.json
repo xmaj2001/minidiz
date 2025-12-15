@@ -1,0 +1,20 @@
+{
+  "node": {
+    "7f1a957b82198953fcfe78970fc6a982a5d0ab6b1a": {
+      "workers": {
+        "app/membros/page": {
+          "moduleId": "[project]/client/.next-internal/server/app/membros/page/actions.js { ACTIONS_MODULE0 => \"[project]/client/app/membros/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "RegisterMember",
+          "filename": "client/app/membros/actions.ts"
+        }
+      },
+      "layer": {
+        "app/membros/page": "action-browser"
+      },
+      "exportedName": "RegisterMember",
+      "filename": "client/app/membros/actions.ts"
+    }
+  },
+  "edge": {}
+}

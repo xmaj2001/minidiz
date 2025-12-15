@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///home/xmaj/dev/nodejs/minidiz/client/components/providers/ReactQueryProvider.tsx"],"sourcesContent":["'use client';\nimport { ReactNode } from \"react\";\nimport { QueryClient, QueryClientProvider } from \"@tanstack/react-query\";\n\nconst queryClient = new QueryClient();\n\nexport default function ReactQueryProvider({\n  children,\n}: {\n  children: ReactNode;\n}) {\n  return (\n    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>\n  );\n}\n"],"names":[],"mappings":";;;;;AAEA;AAAA;AAFA;;;AAIA,MAAM,cAAc,IAAI,yMAAW;AAEpB,SAAS,mBAAmB,KAI1C;QAJ0C,EACzC,QAAQ,EAGT,GAJ0C;IAKzC,qBACE,uMAAC,0NAAmB;QAAC,QAAQ;kBAAc;;;;;;AAE/C;KARwB","debugId":null}}]
+}
